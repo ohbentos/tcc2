@@ -14,12 +14,6 @@ def main():
 def test_how_many_props():
     props = open("./data/metricas.limpo.txt")
 
-    # 996457
-    # 1033353
-    # 1098172
-    # 1198492
-    # 1204006
-    # 1346108
     # all lines have 318 props!
     i = 0
     expected_props = 318
@@ -43,9 +37,7 @@ def test_file_lines(db: PGDatabase):
     db.start()
     db.create_db(False)
 
-    max = 0
     i = 0
-
     for graph_line in tqdm(grafos_file, total=num_lines):
         i += 1
         props_line = props_file.readline()
@@ -57,7 +49,6 @@ def test_file_lines(db: PGDatabase):
         graph_id = graph_list[0]
 
         while int(props_id) > int(graph_id):
-            # print(f"{props_id} is greater than {graph_id}")
             graph_line = grafos_file.readline()
             graph_list = graph_line.strip("\n").split(" ")
             graph_id = graph_list[0]
@@ -90,15 +81,20 @@ INSERT INTO edges VALUES ('{uuid.uuid4()}','{graph_uuid}', '{vertices_uuids[x[0]
             """
             db.execute(edges_query)
 
-        for x in vertices_uuids:
-            random_parameter = np.random.uniform(low=0.0, high=10, size=10).astype(str)
-            vertices_query = f"""
-    INSERT INTO vertices VALUES ('{x}','{graph_uuid}', {",".join(random_parameter)})
-            """
-            db.execute(vertices_query)
+        vertices_random_param = [
+            np.random.uniform(low=0.0, high=10, size=10).astype(str)
+            for _ in range(0, len(vertices_uuids))
+        ]
 
-        # if i % 1000 == 0:
-        #     print(f"placed {i}")
+        lista = [
+            ",".join([f"'{x}'", f"'{graph_uuid}'", ",".join(vertices_random_param[i])])
+            for i, x in enumerate(vertices_uuids)
+        ]
+
+        vertices_query = f"""
+INSERT INTO vertices VALUES {",".join(f"({x})" for x in lista)}
+        """
+        db.execute(vertices_query)
 
 
 if __name__ == "__main__":
