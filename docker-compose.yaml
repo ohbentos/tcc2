@@ -1,0 +1,23 @@
+services:
+  graph:
+    # platform: linux/arm64/v8
+    image: postgres:latest
+    container_name: graph
+    volumes:
+      - graph:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "8000:5432"
+
+networks:
+  default:
+    driver: bridge
+    enable_ipv6: false
+
+name: graph_pg_cluster
+
+volumes:
+  graph:
+    name: graph
