@@ -1,12 +1,3 @@
-import uuid
-
-import numpy as np
-from tqdm import tqdm
-
-from db.postgres import PGDatabase
-from helpers.files import count_file_lines
-
-
 def main():
     pass
 

@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS props;
+
+DROP TABLE IF EXISTS vertices;
+
+DROP TABLE IF EXISTS edges;

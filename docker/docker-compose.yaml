@@ -1,16 +1,47 @@
 services:
   graph:
-    # platform: linux/arm64/v8
+    # cgroup_parent: /docker_executor
+    cpuset: "0,1"
     image: postgres:latest
     container_name: graph
     volumes:
       - graph:/var/lib/postgresql/data
-      - ./pg_hba.conf:/var/lib/postgresql/data/pgdata/pg_hba.conf
     environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_PASSWORD=postgres
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "8000:5432"
+
+
+  graph_unified:
+    # cgroup_parent: /docker_executor
+    cpuset: "0,1"
+    image: postgres:latest
+    container_name: graph_unified
+    volumes:
+      - graph_unified:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "8001:5432"
+
+
+  graph_jsonb:
+    # cgroup_parent: /docker_executor
+    cpuset: "0,1"
+    image: postgres:latest
+    container_name: graph_jsonb
+    volumes:
+      - graph_jsonb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "8002:5432"
 
 networks:
   default:
@@ -22,3 +53,7 @@ name: graph_pg_cluster
 volumes:
   graph:
     name: graph
+  graph_unified:
+    name: graph_unified
+  graph_jsonb:
+    name: graph_jsonb
