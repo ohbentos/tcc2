@@ -43,6 +43,20 @@ services:
     ports:
       - "8002:5432"
 
+  graph_vertice:
+    # cgroup_parent: /docker_executor
+    cpuset: "0,1"
+    image: postgres:latest
+    container_name: graph_vertice
+    volumes:
+      - graph_vertice:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "8003:5432"
+
 networks:
   default:
     driver: bridge
@@ -57,3 +71,5 @@ volumes:
     name: graph_unified
   graph_jsonb:
     name: graph_jsonb
+  graph_vertice:
+    name: graph_vertice

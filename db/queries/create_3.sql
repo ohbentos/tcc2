@@ -353,9 +353,7 @@ CREATE TABLE IF NOT EXISTS props (
 
 CREATE VIEW graph_view_arr AS
 SELECT
-  p.graph_id,
-  p.p1,
-  p.p2, -- properties from the props table (need to fill)
+  p.*,
   e.edges_info, -- all edges
   v.vertices_info -- all vertices
 FROM
@@ -379,9 +377,7 @@ FROM
 
 CREATE VIEW graph_view_json AS
 SELECT
-  p.graph_id,
-  p.p1,
-  p.p2, -- properties from the props table (need to fill)
+  p.*,
   e.edges_info, -- all edges
   v.vertices_info -- all vertices
 FROM

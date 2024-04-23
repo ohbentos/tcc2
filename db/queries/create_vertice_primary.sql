@@ -1,4 +1,4 @@
-CREATE TYPE vertice AS (
+CREATE TYPE edge AS (
   id uuid,
   p1 real,
   p2 real,
@@ -12,10 +12,9 @@ CREATE TYPE vertice AS (
   p10 real
 );
 
-CREATE TYPE edge AS (
+CREATE TYPE vertice AS (
   id uuid,
-  vertice1 vertice,
-  vertice2 vertice,
+  edges edge[],
   p1 real,
   p2 real,
   p3 real,
@@ -30,7 +29,7 @@ CREATE TYPE edge AS (
 
 CREATE TABLE IF NOT EXISTS graphs (
   graph_id uuid PRIMARY KEY,
-  edges edge[] NOT NULL,
+  vertices vertice[] NOT NULL,
   p1 real NOT NULL,
   p2 real NOT NULL,
   p3 real NOT NULL,

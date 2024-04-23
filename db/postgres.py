@@ -56,6 +56,13 @@ class PGDatabase:
         with open("./db/queries/drop.sql") as f:
             self.cur.execute(f.read())
 
+    def create_db_vertice_primary(self, restart):
+        if restart == True:
+            self.drop_all_tables()
+
+        with open("./db/queries/create_vertice_primary.sql") as f:
+            self.cur.execute(f.read())
+
     def create_db_json(self, restart):
         if restart == True:
             self.drop_all_tables()
