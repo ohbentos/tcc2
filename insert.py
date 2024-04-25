@@ -10,15 +10,15 @@ from helpers.files import count_file_lines
 
 def main():
     # insert_data(PGDatabase(8001))
-    insert_data_vertice_primary(
-        PGDatabase(8003),
+    insert_data_edge_primary(
+        PGDatabase(8004),
         reset=False,
     )  # reset=True)
 
 
 def insert_data(db: PGDatabase, reset=False):
     grafos_file = open("./data/grafos_10_a_20.txt", "r")
-    props_file = open("./data/metricas.limpo.txt")
+    props_file = open("./data/metricas.limpo.txt", "r")
 
     db.start()
     db.create_db_3_tables(reset)
@@ -126,7 +126,7 @@ def filter_props(props: list[str]) -> list[str]:
 
 def insert_data_unified(db: PGDatabase, reset=False):
     grafos_file = open("./data/grafos_10_a_20.txt", "r")
-    props_file = open("./data/metricas.limpo.txt")
+    props_file = open("./data/metricas.limpo.txt", "r")
 
     db.start()
     db.create_db_unified(reset)
@@ -200,19 +200,19 @@ def insert_data_unified(db: PGDatabase, reset=False):
             for i, vertice_id in enumerate(vertices_uuids)
         ]
 
-        overall_query = f"""
+        query = f"""
 INSERT INTO graphs VALUES ('{graph_uuid}',
 ARRAY[{",".join([f"ROW({x})" for x in edges_value_list])}]::edge[],
 ARRAY[{",".join([f"ROW({x})" for x in vertices_value_list])}]::vertice[],
 {','.join(props)})
        """
 
-        db.execute(overall_query)
+        db.execute(query)
 
 
 def insert_data_json(db: PGDatabase, reset=False):
     grafos_file = open("./data/grafos_10_a_20.txt", "r")
-    props_file = open("./data/metricas.limpo.txt")
+    props_file = open("./data/metricas.limpo.txt", "r")
 
     db.start()
     db.create_db_json(reset)
@@ -300,19 +300,19 @@ def insert_data_json(db: PGDatabase, reset=False):
             for i, vertice_id in enumerate(vertices_uuids)
         ]
 
-        overall_query = f"""
+        query = f"""
 INSERT INTO graphs VALUES ('{graph_uuid}',
 '{json.dumps(edges_value_list)}'::jsonb,
 '{json.dumps(vertices_value_list)}'::jsonb,
 {','.join(props)})
        """
 
-        db.execute(overall_query)
+        db.execute(query)
 
 
 def insert_data_vertice_primary(db: PGDatabase, reset=False):
     grafos_file = open("./data/grafos_10_a_20.txt", "r")
-    props_file = open("./data/metricas.limpo.txt")
+    props_file = open("./data/metricas.limpo.txt", "r")
 
     db.start()
     db.create_db_vertice_primary(reset)
@@ -367,9 +367,6 @@ def insert_data_vertice_primary(db: PGDatabase, reset=False):
             for i, x in enumerate(graph_edges)
         ]
 
-        # for x in edges_value_list:
-        #     print(x)
-        # exit()
 
         vertices_uuids = [uuid.uuid4() for _ in range(0, graph_n_vertices)]
 
@@ -389,20 +386,97 @@ def insert_data_vertice_primary(db: PGDatabase, reset=False):
             for i, vertice_id in enumerate(vertices_uuids)
         ]
 
-        # for x in vertices_value_list:
-        #     print(x)
-        # exit(0)
-
-# ARRAY[\n{",".join([f"\n  ROW({x})\n" for x in vertices_value_list[0:1]])}]::vertice[],
-        overall_query = f"""
+        query = f"""
 INSERT INTO graphs VALUES ('{graph_uuid}',
 ARRAY[\n{",".join([f"\n  ROW({x})\n" for x in vertices_value_list])}]::vertice[],
 {','.join(props)})
        """
-        # print(overall_query)
-        # exit(0)
 
-        db.execute(overall_query)
+        db.execute(query)
+
+def insert_data_edge_primary(db: PGDatabase, reset=False):
+    grafos_file = open("./data/grafos_10_a_20.txt", "r")
+    props_file = open("./data/metricas.limpo.txt", "r")
+
+    db.start()
+    db.create_db_edge_primary(reset)
+
+    i = 0
+    for graph_line in tqdm(
+        grafos_file, total=count_file_lines(open("./data/grafos_10_a_20.txt", "rb"))
+    ):
+        i += 1
+        props_line = props_file.readline()
+
+        props_list = props_line.strip("\n").split("\t")
+        props_id = float(props_list[0])
+
+        graph_list = graph_line.strip("\n").split(" ")
+        graph_id = graph_list[0]
+
+        if int(props_id) > int(graph_id):
+            graph_line = grafos_file.readline()
+            graph_list = graph_line.strip("\n").split(" ")
+            graph_id = graph_list[0]
+        elif int(props_id) < int(graph_id):
+            props_line = props_file.readline()
+            props_list = props_line.strip("\n").split("\t")
+            props_id = float(props_list[0])
+
+        props = filter_props(props_list[1:])
+
+        graph_n_vertices = int(graph_list[1])
+        graph_comp_onda = graph_list[2]
+
+        graph_edges = graph_list[3:]
+        graph_edges = [
+            (int(graph_list[i]), int(graph_list[i + 1]))
+            for i in range(3, len(graph_list), 2)
+        ]
+
+        graph_uuid = uuid.uuid4()
+
+        vertices_uuids = [uuid.uuid4() for _ in range(0, graph_n_vertices)]
+
+        vertices_random_param = [
+            np.random.uniform(low=0.0, high=10, size=10).astype(np.float32).astype(str)
+            for _ in range(0, len(vertices_uuids))
+        ]
+
+        vertices_value_list = [
+            ",".join(
+                [
+                    f"'{vertice_id}'",
+                    ",".join(vertices_random_param[i]),
+                ]
+            )
+            for i, vertice_id in enumerate(vertices_uuids)
+        ]
+
+        edges_random_param = [
+            np.random.uniform(low=0.0, high=10, size=10).astype(np.float32).astype(str)
+            for _ in range(0, len(graph_edges))
+        ]
+
+        edges_value_list = [
+            ",".join(
+                [
+                    f"'{uuid.uuid4()}'",
+                    f"ARRAY[ {",".join([f'ROW({x})' for x in  vertices_value_list])} ]::vertice[]",
+                    ",".join([f"{x}" for x in edges_random_param[i]]),
+                ]
+            )
+            for i, x in enumerate(graph_edges)
+        ]
+
+
+        query = f"""
+INSERT INTO graphs VALUES ('{graph_uuid}',
+ARRAY[\n{",".join([f"\n  ROW({x})\n" for x in edges_value_list])}]::edge[],
+{','.join(props)})
+       """
+
+        db.execute(query)
 
 
 if __name__ == "__main__":
