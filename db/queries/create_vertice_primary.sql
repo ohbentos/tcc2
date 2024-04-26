@@ -352,7 +352,8 @@ CREATE TABLE IF NOT EXISTS graphs (
 CREATE VIEW all_view AS 
 SELECT
   g.*
-FROM graphs g;
+FROM 
+  graphs g;
 
 CREATE VIEW graph_view AS
 SELECT
@@ -372,3 +373,24 @@ SELECT
   (unnest(g.vertices)).edges AS edges
 FROM
   graphs g;
+
+
+CREATE VIEW get_edge_view AS
+SELECT 
+  g.graph_id,
+  edge.* 
+FROM 
+  graphs g,
+  unnest(g.vertices) as vert,
+  unnest(vert.edges) as edge;
+
+-- SELECT g.graph_id, vertice.* FROM graphs g, unnest(g.edges) as ed, unnest(ed.vertices) as vertice  WHERE vertice.p1>10 LIMIT 10;
+CREATE VIEW get_vertice_view AS 
+SELECT
+  g.graph_id,
+  vertice.*
+FROM
+  graphs g
+CROSS JOIN LATERAL
+  unnest(g.vertices) as vertice;
+-- maybe remove edge.vertices from output

@@ -354,7 +354,8 @@ CREATE TABLE IF NOT EXISTS graphs (
 CREATE VIEW all_view AS 
 SELECT
   g.*
-FROM graphs g;
+FROM 
+  graphs g;
 
 CREATE VIEW graph_view AS
 SELECT
@@ -362,13 +363,11 @@ SELECT
 FROM
   graphs g;
 
-
 CREATE VIEW edge_view AS
 SELECT
   g.graph_id, g.edges
 FROM
   graphs g;
-
 
 CREATE VIEW vertice_view AS
 SELECT
@@ -376,3 +375,20 @@ SELECT
 FROM
   graphs g;
 
+CREATE VIEW get_vertice_view AS
+SELECT 
+  graphs.graph_id,
+  vertice 
+FROM 
+  graphs,
+  unnest(graphs.vertices) AS vertices,
+  unnest(vertices) AS vertice;
+
+CREATE VIEW get_edge_view AS
+SELECT 
+  graphs.graph_id,
+  edge 
+FROM 
+  graphs,
+  unnest(graphs.edges) AS edges,
+  unnest(edges) AS edge;

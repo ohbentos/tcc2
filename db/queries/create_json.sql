@@ -332,13 +332,11 @@ SELECT
 FROM
   graphs g;
 
-
 CREATE VIEW edge_view AS
 SELECT
   g.graph_id, g.edges
 FROM
   graphs g;
-
 
 CREATE VIEW vertice_view AS
 SELECT
@@ -346,3 +344,18 @@ SELECT
 FROM
   graphs g;
 
+CREATE VIEW get_vertice_view AS
+SELECT 
+  graphs.graph_id, 
+  vertice 
+FROM 
+  graphs,
+  jsonb_array_elements(graphs.vertices) as vertice;
+
+CREATE VIEW get_edge_view AS
+SELECT 
+  graphs.graph_id, 
+  edge 
+FROM 
+  graphs,
+  jsonb_array_elements(graphs.edges) as edge;

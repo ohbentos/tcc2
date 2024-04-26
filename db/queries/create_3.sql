@@ -419,12 +419,84 @@ FROM
 
 CREATE VIEW edge_view AS
 SELECT
-  g.*
+  graph_id,
+  jsonb_agg (
+    json_build_object (
+      'id',
+      id,
+      'vertice1',
+      vertice1,
+      'vertice2',
+      vertice2,
+      'p1',
+      p1,
+      'p2',
+      p2,
+      'p3',
+      p3,
+      'p4',
+      p4,
+      'p5',
+      p5,
+      'p6',
+      p6,
+      'p7',
+      p7,
+      'p8',
+      p8,
+      'p9',
+      p9,
+      'p10',
+      p10
+    )
+  ) as edges
 FROM
-  edges g;
+  edges
+GROUP BY
+  graph_id;
 
 CREATE VIEW vertice_view AS
 SELECT
-  g.*
+  graph_id,
+  jsonb_agg (
+    json_build_object (
+      'id',
+      id,
+      'p1',
+      p1,
+      'p2',
+      p2,
+      'p3',
+      p3,
+      'p4',
+      p4,
+      'p5',
+      p5,
+      'p6',
+      p6,
+      'p7',
+      p7,
+      'p8',
+      p8,
+      'p9',
+      p9,
+      'p10',
+      p10
+    )
+  ) as vertices
 FROM
-  vertices g;
+  vertices
+GROUP BY
+  graph_id;
+
+CREATE VIEW get_vertice_view AS
+SELECT
+  vertices.*
+FROM
+  vertices;
+
+CREATE VIEW get_edge_view AS
+SELECT
+  edges.*
+FROM
+  edges;
