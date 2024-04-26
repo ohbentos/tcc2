@@ -10,10 +10,11 @@ from helpers.files import count_file_lines
 
 def main():
     # insert_data(PGDatabase(8001))
-    insert_data_edge_primary(
-        PGDatabase(8004),
-        reset=False,
-    )  # reset=True)
+    # insert_data_edge_primary(
+        # PGDatabase(8004),
+        # reset=False,
+    # )  # reset=True)
+    pass
 
 
 def insert_data(db: PGDatabase, reset=False):

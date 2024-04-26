@@ -350,3 +350,29 @@ CREATE TABLE IF NOT EXISTS graphs (
   p316 real NOT NULL,
   p317 real NOT NULL
 );
+
+CREATE VIEW all_view AS 
+SELECT
+  g.*
+FROM graphs g;
+
+CREATE VIEW graph_view AS
+SELECT
+  g.graph_id, g.p1, g.p2,g.p3,g.p4,g.p5,g.p6,g.p7,g.p8,g.p9,g.p10,g.p11,g.p12,g.p13,g.p14,g.p15,g.p16,g.p17,g.p18,g.p19,g.p20,g.p21,g.p22,g.p23,g.p24,g.p25,g.p26,g.p27,g.p28,g.p29,g.p30,g.p31,g.p32,g.p33,g.p34,g.p35,g.p36,g.p37,g.p38,g.p39,g.p40,g.p41,g.p42,g.p43,g.p44,g.p45,g.p46,g.p47,g.p48,g.p49,g.p50,g.p51,g.p52,g.p53,g.p54,g.p55,g.p56,g.p57,g.p58,g.p59,g.p60,g.p61,g.p62,g.p63,g.p64,g.p65,g.p66,g.p67,g.p68,g.p69,g.p70,g.p71,g.p72,g.p73,g.p74,g.p75,g.p76,g.p77,g.p78,g.p79,g.p80,g.p81,g.p82,g.p83,g.p84,g.p85,g.p86,g.p87,g.p88,g.p89,g.p90,g.p91,g.p92,g.p93,g.p94,g.p95,g.p96,g.p97,g.p98,g.p99,g.p100,g.p101,g.p102,g.p103,g.p104,g.p105,g.p106,g.p107,g.p108,g.p109,g.p110,g.p111,g.p112,g.p113,g.p114,g.p115,g.p116,g.p117,g.p118,g.p119,g.p120,g.p121,g.p122,g.p123,g.p124,g.p125,g.p126,g.p127,g.p128,g.p129,g.p130,g.p131,g.p132,g.p133,g.p134,g.p135,g.p136,g.p137,g.p138,g.p139,g.p140,g.p141,g.p142,g.p143,g.p144,g.p145,g.p146,g.p147,g.p148,g.p149,g.p150,g.p151,g.p152,g.p153,g.p154,g.p155,g.p156,g.p157,g.p158,g.p159,g.p160,g.p161,g.p162,g.p163,g.p164,g.p165,g.p166,g.p167,g.p168,g.p169,g.p170,g.p171,g.p172,g.p173,g.p174,g.p175,g.p176,g.p177,g.p178,g.p179,g.p180,g.p181,g.p182,g.p183,g.p184,g.p185,g.p186,g.p187,g.p188,g.p189,g.p190,g.p191,g.p192,g.p193,g.p194,g.p195,g.p196,g.p197,g.p198,g.p199,g.p200,g.p201,g.p202,g.p203,g.p204,g.p205,g.p206,g.p207,g.p208,g.p209,g.p210,g.p211,g.p212,g.p213,g.p214,g.p215,g.p216,g.p217,g.p218,g.p219,g.p220,g.p221,g.p222,g.p223,g.p224,g.p225,g.p226,g.p227,g.p228,g.p229,g.p230,g.p231,g.p232,g.p233,g.p234,g.p235,g.p236,g.p237,g.p238,g.p239,g.p240,g.p241,g.p242,g.p243,g.p244,g.p245,g.p246,g.p247,g.p248,g.p249,g.p250,g.p251,g.p252,g.p253,g.p254,g.p255,g.p256,g.p257,g.p258,g.p259,g.p260,g.p261,g.p262,g.p263,g.p264,g.p265,g.p266,g.p267,g.p268,g.p269,g.p270,g.p271,g.p272,g.p273,g.p274,g.p275,g.p276,g.p277,g.p278,g.p279,g.p280,g.p281,g.p282,g.p283,g.p284,g.p285,g.p286,g.p287,g.p288,g.p289,g.p290,g.p291,g.p292,g.p293,g.p294,g.p295,g.p296,g.p297,g.p298,g.p299,g.p300,g.p301,g.p302,g.p303,g.p304,g.p305,g.p306,g.p307,g.p308,g.p309,g.p310,g.p311,g.p312,g.p313,g.p314,g.p315,g.p316,g.p317
+FROM
+  graphs g;
+
+
+CREATE VIEW edge_view AS
+SELECT
+  g.graph_id, g.edges
+FROM
+  graphs g;
+
+
+CREATE VIEW vertice_view AS
+SELECT
+  g.graph_id, g.edges
+FROM
+  graphs g;
+

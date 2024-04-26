@@ -398,3 +398,33 @@ FROM
     WHERE
       v.graph_id = p.graph_id
   ) v;
+
+CREATE VIEW all_view_arr AS
+SELECT
+  g.*
+FROM
+  graph_view_arr g;
+
+CREATE VIEW all_view_arr_json AS
+SELECT
+  g.*
+FROM
+  graph_view_json g;
+
+CREATE VIEW graph_view AS
+SELECT
+  g.*
+FROM
+  props g;
+
+CREATE VIEW edge_view AS
+SELECT
+  g.*
+FROM
+  edges g;
+
+CREATE VIEW vertice_view AS
+SELECT
+  g.*
+FROM
+  vertices g;

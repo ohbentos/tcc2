@@ -223,8 +223,12 @@ if __name__ == "__main__":
                 "SELECT * from graphs LIMIT 1000",
                 "SELECT * from graphs LIMIT 10000",
                 "SELECT * from graphs LIMIT 100000",
-                # "SELECT * from graphs LIMIT 1000000",
-            ]
+                "SELECT * from graphs LIMIT 1000000",
+            ],
+            "get_only_graph_properties": [
+                "SELECT graph_id,"
+
+            ],
         }
     }
 
