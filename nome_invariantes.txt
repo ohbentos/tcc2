@@ -1,0 +1,319 @@
+OBS.: o número refere-se à coluna (a coluna 135 não foi considerada)
+1	ID
+2	Number of Nodes
+3	Edges Number
+4	Number of Wavelengths (variável dependente)
+5	Density
+6	Link Connectivity
+7	Node Connectivity
+8	Algebraic Connectivity
+9	Natural Connectivity
+10	Proportional Maximal Clique
+11	Amount of Maximal Cliques
+12	Number of Minimum Sets that Disconnects the Graph
+13	Kirchhoff Index
+14	Number of Spanning Trees
+15	Harary Index
+16	Communication Efficiency
+17	Minimum of Vertex Degree
+18	Ratio nodes with Minimum Degree
+19	Maximum of Vertex Degree
+20	Ratio nodes with Maximum Vertex Degree
+21	Mean of Vertex Degree
+22	Median of Vertex Degree
+23	Amplitude of Vertex Degree
+24	Interquartilic Distance of Vertex Degree
+25	SD by Median of Vertex Degree
+26	Coefficient of Variation by Median of Vertex Degree
+27	SD of Vertex Degree
+28	Coefficient of Variation of Vertex Degree
+29	Degree Centralization
+30	Assortativity Degree
+31	Minimum of Vertex Degree Normalized
+32	Maximum of Vertex Degree Normalized
+33	Mean of Vertex Degree Normalized
+34	Median of Vertex Degree Normalized
+35	Amplitude of Vertex Degree Normalized
+36	Interquartilic Distance of Vertex Degree Normalized
+37	SD by Median of Vertex Degree Normalized
+38	Coefficient of Variation by Median of Vertex Degree Normalized
+39	SD of Vertex Degree Normalized
+40	Coefficient of Variation of Vertex Degree Normalized
+41	Degree Centralization Normalized
+42	Minimum of Average Nearest Neighbor Degree
+43	Maximum of Average Nearest Neighbor Degree
+44	Mean of Average Nearest Neighbor Degree
+45	Median of Average Nearest Neighbor Degree
+46	Amplitude of Average Nearest Neighbor Degree
+47	Interquartilic Distance of Average Nearest Neighbor Degree
+48	SD by Median of Average Nearest Neighbor Degree
+49	Coefficient of Variation by Median of Average Nearest Neighbor Degree
+50	SD of Average Nearest Neighbor Degree
+51	Coefficient of Variation of Average Nearest Neighbor Degree
+52	Diameter
+53	Mean of Distance
+54	Median Distance
+55	Interquartilic Distance of Distance
+56	SD by Median of Distance
+57	Coefficient of Variation by Median of Distance
+58	SD of Distance
+59	Coefficient of Variation of Distance
+60	Wiener Index
+61	Minimum of Communicability Distance
+62	Maximum of Communicability Distance
+63	Mean of Communicability Distance
+64	Median of Communicability Distance
+65	Amplitude of Communicability Distance
+66	Interquartilic Distance of Communicability Distance
+67	SD by Median of Communicability Distance
+68	Coefficient of Variation by Median of Communicability Distance
+69	SD of Communicability Distance
+70	Coefficient of Variation of Communicability Distance
+71	Minimum of Transmission
+72	Maximum of Transmission
+73	Mean of Transmission
+74	Median of Transmission
+75	Amplitude of Transmission
+76	Interquartilic Distance of Transmission
+77	SD by Median of Transmission
+78	Coefficient of Variation by Median of Transmission
+79	SD of Transmission
+80	Coefficient of Variation of Transmission
+81	Minimum of Transitivity
+82	Maximum of Transitivity
+83	Mean of Transitivity
+84	Median of Local Transitivity
+85	Amplitude of Transitivity
+86	Interquartilic Distance of Transitivity
+87	SD by Median of Transitivity
+88	Coefficient of Variation by Median of Local Transitivity
+89	SD of Transitivity
+90	Coefficient of Variation of Local Transitivity
+91	Global Transitivity
+92	Minimum Eccentricity
+93	Mean of Eccentricity
+94	Median of Eccentricity
+95	Amplitude of Eccentricity
+96	Interquartilic Distance of Eccentricity
+97	SD by Median of Eccentricity
+98	Coefficient of Variation by Median of Eccentricity
+99	SD of Eccentricity
+100	Coefficient of Variation of Eccentricity
+101	Minimum Edge Betweenness
+102	Maximum Edge Betweenness
+103	Mean of Edge Betweenness
+104	Median of Edge Betweenness
+105	Amplitude of Edge Betweenness
+106	Interquartilic Distance of Edge Betweenness
+107	SD by Median of Edge Betweenness
+108	Coefficient of Variation by Median of Edge Betweenness
+109	SD of Edge Betweenness
+110	Coefficient of Variation of Edge Betweenness
+111	Minimum of Vertex Betweenness
+112	Maximum of Vertex Betweenness
+113	Mean of Vertex Betweenness
+114	Median of Vertex Betweenness
+115	Amplitude of Vertex Betweenness
+116	Interquartilic Distance of Vertex Betweenness
+117	SD by Median of Vertex Betweenness
+118	Coefficient of Variation by Median of Vertex Betweenness
+119	SD of Vertex Betweenness
+120	Coefficient of Variation of Vertex Betweenness
+121	Vertex Betweenness Centrality
+122	Minimum of Vertex Betweenness Normalized
+123	Maximum of Vertex Betweenness Normalized
+124	Mean of Vertex Betweenness Normalized
+125	Median of Vertex Betweenness Normalized
+126	Amplitude of Vertex Betweenness Normalized
+127	Interquartilic Distance of Vertex Betweenness Normalized
+128	SD by Median of Vertex Betweenness Normalized
+129	Coefficient of Variation by Median of Vertex Betweenness Normalized
+130	Vertex Betweenness Normalized
+131	Coefficient of Variation of Vertex Betweenness Normalized
+132	Vertex Betweenness Centrality Normalized
+133	Minimum of Adjusted Betweenness Centrality
+134	Maximum of Adjusted Betweenness Centrality
+136	Median of Adjusted Betweenness Centrality
+137	Amplitude of Adjusted Betweenness Centrality
+138	Interquartilic Distance of Adjusted Betweenness Centrality
+139	SD by Median of Adjusted Betweenness Centrality
+140	Coefficient of Variation by Median of Adjusted Betweenness Centrality
+141	SD of Adjusted Betweenness Centrality
+142	Coefficient of Variation of Adjusted Betweenness Centrality
+143	Minimum of Modularity
+144	Maximum of Modularity
+145	Mean of Modulation
+146	Median of Modularity
+147	Amplitude of Modularity
+148	Interquartilic Distance of Modularity
+149	SD by Median of Modularity
+150	Coefficient of Variation by Median of Modularity
+151	SD of Modulation
+152	Coefficient of Variation of Modularity
+153	Global Modularity Betweenness
+154	Minimum of Adjacenct Triangles
+155	Maximum of Adjacenct Triangles
+156	Mean of Adjacenct Triangles
+157	Median of Adjacenct Triangles
+158	Amplitude of Adjacenct Triangles
+159	Interquartilic Distance of Adjacenct Triangles
+160	SD by Median of Adjacenct Triangles
+161	Coefficient of Variation by Median of Adjacent Triangles
+162	SD of Adjacenct Triangles
+163	Coefficient of Variation of Adjacenct Triangles
+164	Minimum of Alpha Centrality
+165	Maximum of Alpha Centrality
+166	Mean of Alpha Centrality
+167	Median of Alpha Centrality
+168	Amplitude of Alpha Centrality
+169	Interquartilic Distance of Alpha Centrality
+170	SD by Median of Alpha Centrality
+171	Coefficient of Variation by Median of Alpha Centrality
+172	SD of Alpha Centrality
+173	Coefficient de Variation Alpha Centrality
+174	Minimum of Bonacich Power Centrality
+175	Maximum of Bonacich Power Centrality
+176	Mean of Bonacich Power Centrality
+177	Median of Bonacich Power Centrality
+178	Amplitude of Bonacich Power Centrality
+179	Interquartilic Distance of Bonacich Power Centrality
+180	SD by Median of Bonacich Power Centrality
+181	Coefficient of Variation by Median of Bonacich Power Centrality
+182	SD of Bonacich Power Centrality
+183	Coefficient of Variation of Bonacich Power Centrality
+184	Minimum of Leverage Centrality
+185	Maximum of Leverage Centrality
+186	Mean of Leverage Centrality
+187	Median of Leverage Centrality
+188	Amplitude of Leverage Centrality
+189	Interquartilic Distance of Leverage Centrality
+190	SD by Median of Leverage Centrality
+191	Coefficient of Variation by Median of Leverage Centrality
+192	SD of Leverage Centrality
+193	Coefficient of Variation of Leverage Centrality
+194	Minimum of Closeness Centrality of Vertices
+195	Maximum of Closeness Centrality of Vertices
+196	Mean of Closeness Centrality of Vertices
+197	Median of Closeness Centrality of Vertices
+198	Amplitude of Closeness Centrality of Vertices
+199	Interquartilic Distance of Closeness Centrality of Vertices
+200	SD by Median of Closeness Centrality of Vertices
+201	Coefficient of Variation by Median of Closeness Centrality of Vertices
+202	SD of Closeness Centrality of Vertices
+203	Coefficient of Variation of Closeness Centrality of Vertices
+204	Closeness Centralization
+205	Minimum of Closeness Centrality by Vertices Normalized
+206	Maximum of Closeness Centrality by Vertices Normalized
+207	Mean of Closeness Centrality by Vertices Normalized
+208	Median of Closeness Centrality by Vertices Normalized
+209	Amplitude of Closeness Centrality of Vertices Normalized
+210	Interquartilic Distance of Closeness Centrality of Vertices Normalized
+211	SD by Median of Closeness Centrality Normalized
+212	Coefficient of Variation by Median of Closeness Centrality of Vertices Normalized
+213	SD of Closeness Centrality Normalized
+214	Coefficient of Variation of Closeness Centrality of Vertices Normalized
+215	Closeness Centralization Normalized
+216	Minimum of Eigenvector Centrality by Vertices
+217	Maximum of Eigenvector Centrality by Vertice
+218	Mean of Eigenvector Centrality by Vertice
+219	Median of Eigenvector Centrality by Vertice
+220	Amplitude of Eigenvector Centrality by Vertices
+221	Interquartilic Distance of Eigenvector Centrality by Vertice
+222	Sd by Median of Eigenvector Centrality by Vertice
+223	Coefficient of Variation by Median of Eigenvector Centrality by Vertice
+224	SD of Eigenvector Centrality by Vertice
+225	Coefficient of Variation of Eigenvector Centrality by Vertices
+226	Eigenvector Centrality Global
+227	Minimum of Cocitation Coupling
+228	Maximum of Cocitation Coupling
+229	Mean of Cocitation Coupling
+230	Median of Cocitation Coupling
+231	Amplitude of Cocitation Coupling
+232	Interquartilic Distance Cocitation Coupling
+233	SD by Median of Cocitation Coupling
+234	Coefficient of Variation by Median of Cocitation Coupling
+235	SD of Cocitation Coupling
+236	Coefficient of Variation of Cocitation Couplin
+237	Minimum of Burt’s Constraint
+238	Maximum of Burt’s Constraint
+239	Mean of Burt’s Constraint
+240	Median of Burt’s constraint
+241	Amplitude of Burt’s Constraint
+242	Interquartilic Distance of Burt’s Constraint
+243	SD by Median of Burt’s Constraint
+244	Coefficient of Variation by Median of Burt’s Constraint
+245	SD of Burt’s Constraint
+246	Coefficient of Variation of Burt’s Constraint
+247	Minimum of Graph Diversity
+248	Maximum of Graph Diversity
+249	Mean of Graph Diversity
+250	Median of Graph Diversity
+251	Amplitude of Graph Diversity
+252	Interquartilic Distance of Graph Diversity
+253	SD by Median of Graph Diversity
+254	Coefficient of Variation by Median of Graph Diversity
+255	SD of Graph Diversity
+256	Coefficient of Variation of Graph Diversity
+257	Minimum of Kleinberg’s Hub Centrality
+258	Maximum of Kleinberg’s Hub Centrality
+259	Mean of Kleinberg’s Hub Centrality
+260	Median of Kleinberg’s Hub Centrality
+261	Amplitude of Kleinberg’s Hub Centrality
+262	Interquartilic Distance of Kleinberg’s Hub Centrality
+263	Sd by Median of Kleinberg’s Hub Centrality
+264	Coefficient of Variation by Median of Kleinberg’s Hub Centrality
+265	SD of Kleinberg’s Hub Centrality
+266	Coefficient of Variation of Kleinberg’s Hub Centrality
+267	Kleinberg’s Hub Centrality Global
+268	Minimum of Page Rank
+269	Maximum of Page Rank
+270	Mean of Page Rank
+271	Median of Page Rank
+272	Amplitude of Page Rank
+273	Interquartilic Distance of Page Rank
+274	SD by Median of Page Rank
+275	Coefficient of Variation by Median of Page Rank
+276	SD of Page Rank
+277	Coefficient of Variation of Page Rank
+278	Page Rank Global
+279	Minimum of Jaccard Similarity
+280	Maximum of Jaccard Similarity
+281	Mean of Jaccard Similarity
+282	Median of Jaccard Similarity
+283	Amplitude of Jaccard Similarity
+284	Interquartilic Distance of Jaccard Similarity
+285	SD by Median of Jaccard Similarity
+286	Coefficient of Variation by Median of Jaccard Similarity
+287	SD of Jaccard Similarity
+288	Coefficient of Variation of Jaccard Similarity
+289	Minimum of Dice Similarity
+290	Maximum of Dice Similarity
+291	Mean of Dice Similarity
+292	Median of Dice Similarity
+293	Amplitude of Dice Similarity
+294	Interquartilic Distance of Dice Similarity
+295	SD by Median of Dice Similarity
+296	Coefficient of Variation by Median of Dice Similarity
+297	SD of Dice Similarity
+298	Coefficient of Variation of Dice Similarity
+299	Minimum of Inverse Log-weighted Similarity
+300	Maximum of Inverse Log-weighted Similarity
+301	Mean of Inverse log-weighted Similarity
+302	Median of Inverse Log-weighted Similarity
+303	Amplitude of Inverse Log-weighted Similarity
+304	Interquartilic Distance of Inverse Log-weighted Similarity
+305	SD by Median of Inverse Log-weighted Similarity
+306	Coefficient of Variation by Median of Inverse Log-weighted Similarity
+307	SD of Inverse log-weighted Similarity
+308	Coefficient of Variation of Inverse Log-weighted Similarity
+309	Minimum of Subgraph Centrality
+310	Maximum of Subgraph Centrality
+311	Mean of Subgraph Centrality
+312	Median of Subgraph Centrality
+313	Amplitude of Subgraph Centrality
+314	Interquartilic Distance Subgraph Centrality
+315	SD by Median of Subgraph Centrality
+316	Coefficient of Variation by Median of Subgraph Centrality
+317	SD of Subgraph Centrality
+318	Coefficient of Variation of Subgraph Centrality
+ 
