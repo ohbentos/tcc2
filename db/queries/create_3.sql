@@ -269,3 +269,31 @@ WHERE
   v.vertice_filter 
 AND 
   g.p1> 15;  -- add graph level filter
+
+-- filters all edges and vertices
+DROP VIEW IF EXISTS graphs_all_filtered_view;
+CREATE OR REPLACE VIEW graphs_all_filtered_view AS
+SELECT
+  g.graph_id
+FROM
+  graphs g
+JOIN (
+  SELECT
+    graph_id,
+    bool_and(p1 > 10) AS edge_filter
+  FROM
+    edges
+  GROUP BY
+    graph_id
+) e ON g.graph_id = e.graph_id AND e.edge_filter
+JOIN (
+  SELECT
+    graph_id,
+    bool_and(p1 > 10) AS vertice_filter
+  FROM
+    vertices
+  GROUP BY
+    graph_id
+) v ON g.graph_id = v.graph_id AND v.vertice_filter
+WHERE
+  g.p1 > 10;
