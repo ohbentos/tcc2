@@ -3,17 +3,16 @@ import multiprocessing
 import os
 import time
 from multiprocessing import Queue
-from multiprocessing.synchronize import Event as EventClass
-
-import psutil
+from multiprocessing.synchronize import Event
 
 import docker
 from db.postgres import PGDatabase
 from monitor import (SLEEP_TIME, count_io_cgroups, monitor_pid,
                      monitor_python_process)
+from statistic import calculate_statistics
 
 
-def run_query(db: PGDatabase, query: str, done_event: EventClass):
+def run_query(db: PGDatabase, query: str, done_event: Event):
     try:
         db.execute(query)
         db.cur.fetchall()
@@ -95,9 +94,15 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
 
     results = {}
     data = server_results_queue.get()
-    results["server"] = data
+    results["server"] = {
+        "samples": data,
+        "stats": calculate_statistics(data),
+    }
     data = client_results_queue.get()
-    results["client"] = data
+    results["client"] = {
+        "samples": data,
+        "stats": calculate_statistics(data),
+    }
 
     final_io = count_io_cgroups()
 
@@ -114,6 +119,7 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
         os.makedirs(os.path.dirname(file_name), exist_ok=True)
         with open(file_name, "w") as f:
             json.dump(results, f)
+            print(f"Results saved to:\n{file_name.replace(' ','\\ ').replace('*','\\*').replace('?','\\?')}")
 
     # print("Client Performance:", results["client_perf"])
     # print("Server Performance:", json.dumps(results["server_perf"]))
@@ -123,7 +129,7 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
 
 if __name__ == "__main__":
     test_db(
-        "graph", "select * from graphs LIMIT 1000000", "get_all_graph_properties", 0, 0
+        "graph", "select * from graphs LIMIT 10000", "get_all_graph_properties", 0, 0
     )
     # tests = {
     #     "graph_unified": {

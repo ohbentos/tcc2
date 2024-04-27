@@ -67,8 +67,6 @@ def insert_data(db: PGDatabase, reset=False):
 INSERT INTO props VALUES ('{graph_uuid}',{' , '.join(props)})
         """
 
-        props_json = json.dumps({})
-
         vertices_uuids = [uuid.uuid4() for _ in range(0, graph_n_vertices)]
 
         edges_random_param = [
@@ -365,7 +363,7 @@ def insert_data_vertice_primary(db: PGDatabase, reset=False):
                     ",".join([f"{x}" for x in edges_random_param[i]]),
                 ]
             )
-            for i, x in enumerate(graph_edges)
+            for i, _ in enumerate(graph_edges)
         ]
 
 
@@ -467,7 +465,7 @@ def insert_data_edge_primary(db: PGDatabase, reset=False):
                     ",".join([f"{x}" for x in edges_random_param[i]]),
                 ]
             )
-            for i, x in enumerate(graph_edges)
+            for i, _ in enumerate(graph_edges)
         ]
 
 

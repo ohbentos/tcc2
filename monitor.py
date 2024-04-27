@@ -1,23 +1,29 @@
 import time
 from multiprocessing import Process, Queue
-from multiprocessing.synchronize import Event as EventClass
+from multiprocessing.synchronize import Event
 from typing import Tuple
 
 import psutil
 
 from pid import PID
 
-SLEEP_TIME = 0.1
+SLEEP_TIME = 0.05
 
 CGROUP_PATH = "/sys/fs/cgroup/docker.slice"
 
 
-def monitor_pid(pid: int, done_event: EventClass, output_queue: Queue):
-    global SLEEP_TIME
+import time
+
+import psutil
+
+
+def monitor_pid(pid: int, done_event, output_queue):
+    global SLEEP_TIME, CGROUP_PATH
 
     stats = []
     print("Starting to monitor server perf")
     while not done_event.is_set():
+        loop_start_time = time.time_ns()  # Record the start time of the loop
         try:
             parent = psutil.Process(pid)
             # Get a list of all child processes recursively
@@ -28,16 +34,20 @@ def monitor_pid(pid: int, done_event: EventClass, output_queue: Queue):
 
         # Initialize CPU usage calculation for each process
         for process in processes:
-            process.cpu_percent(interval=None)
+            process.cpu_percent(interval=None)  # Immediate call to start measuring
         initial_cpu_usage = read_cpu_usage(CGROUP_PATH)
 
-        # Sleep a short while to measure CPU usage more accurately
-        time.sleep(SLEEP_TIME)
+        # Calculate how much time to sleep by subtracting the elapsed time from SLEEP_TIME
+        elapsed_time = time.time_ns() - loop_start_time
+        sleep_time = max(
+            0, SLEEP_TIME - (elapsed_time / 1000000000)
+        )  # Ensure sleep_time is not negative
+        time.sleep(sleep_time)  # Sleep for the calculated duration
 
         final_cpu_usage = read_cpu_usage(CGROUP_PATH)
         delta_usage = final_cpu_usage - initial_cpu_usage
         delta_time = SLEEP_TIME * 1_000_000  # seconds to microseconds
-        cpu_percentage = delta_usage / delta_time * 1 * 100
+        cpu_percentage = delta_usage / delta_time * 100
         total_memory_usage = 0
 
         for process in processes:
@@ -47,7 +57,6 @@ def monitor_pid(pid: int, done_event: EventClass, output_queue: Queue):
                 continue  # The process has ended or doesn't exist anymore
 
         s = {"cpu": cpu_percentage, "mem": total_memory_usage}
-        # print(s)
         stats.append(s)
 
     print("Exiting server perf")
@@ -60,24 +69,34 @@ def count_io_cgroups() -> Tuple[int, int]:
         return (int(content[1][7:]), int(content[2][7:]))
 
 
-def monitor_python_process(
-    process: Process, done_event: EventClass, output_queue: Queue
-):
-    global PID
+import time
+from multiprocessing import Process, Queue
+
+import psutil
+
+
+def monitor_python_process(process: Process, done_event: Event, output_queue: Queue):
+    global PID, SLEEP_TIME
 
     usage_stats = []
     ps = psutil.Process(process.pid)
     PID = process.pid
     try:
-        print("Starting to monitor process")
+        print("Starting to monitor client perf")
         while not done_event.is_set():
+            start_time = time.time()  # Record the start time of the monitoring
+
             cpu_usage = ps.cpu_percent(interval=None)
             memory_usage = ps.memory_info().rss  # in bytes
             usage_stats.append({"cpu": cpu_usage, "mem": memory_usage})
-            time.sleep(SLEEP_TIME)
+
+            elapsed_time = time.time() - start_time  # Calculate the elapsed time
+            remaining_sleep_time = max(
+                0, SLEEP_TIME - elapsed_time
+            )  # Calculate the remaining time to sleep
+            time.sleep(remaining_sleep_time)  # Sleep only for the remaining time
     except psutil.NoSuchProcess:
-        pass
-        # print("No such process found.")
+        pass  # Handle the exception as necessary
     finally:
         print("Exiting client perf")
         output_queue.put(usage_stats)
