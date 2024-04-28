@@ -5,7 +5,7 @@ import time
 from multiprocessing import Queue
 from multiprocessing.synchronize import Event
 
-import docker
+from container import get_container_info
 from db.postgres import PGDatabase
 from monitor import (SLEEP_TIME, count_io_cgroups, monitor_pid,
                      monitor_python_process)
@@ -26,31 +26,9 @@ def run_query(db: PGDatabase, query: str, done_event: Event):
 
 
 def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run: int):
-
-    dclient = docker.from_env()
-    containers = dclient.containers.list()
-
-    cont = {}
-    pid = 0
-    for x in containers:
-        if x.attrs == None:
-            print("ERROR")
-            exit(0)
-        state = x.attrs["State"]
-        running = state["Running"]
-        pid = state["Pid"]
-
-        if running == True:
-            name = x.attrs["Name"][1:]
-            cont[name] = {}
-            cont[name]["id"] = x.id
-            cont[name]["port"] = x.attrs["HostConfig"]["PortBindings"]["5432/tcp"][0][
-                "HostPort"
-            ]
-            cont[name]["pid"] = pid
-
-    db_info = cont[db_name]
-    db = PGDatabase(int(db_info["port"]))
+    db_info = get_container_info(db_name)
+    db = PGDatabase(db_info["port"])
+    pid = db_info["pid"]
 
     db.start()
 
@@ -60,11 +38,7 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
 
     query_process = multiprocessing.Process(
         target=run_query,
-        args=(
-            (db),
-            (query),
-            (done_event),
-        ),
+        args=(db, query, done_event),
         daemon=True,
     )
     client_perf_process = multiprocessing.Process(
@@ -112,6 +86,11 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
     results["io"] = {"read": read_bytes, "write": write_bytes}
     results["time"] = query_execution_time
     results["interval"] = SLEEP_TIME
+    results["run_config"] =  {
+        "db_name": db_name,
+        "cpu_count": cpu_count,
+        "run_number": run,
+    }
 
     if test_name is not None:
         file_name = f"./results/{db_name}/{cpu_count}/{run}_{test_name}_{query}.json"
@@ -121,15 +100,10 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
             json.dump(results, f)
             print(f"Results saved to:\n{file_name.replace(' ','\\ ').replace('*','\\*').replace('?','\\?')}")
 
-    # print("Client Performance:", results["client_perf"])
-    # print("Server Performance:", json.dumps(results["server_perf"]))
-    # print("IO Performance:", (read_bytes, write_bytes))
-    # print("time:", query_execution_time)
-
 
 if __name__ == "__main__":
     test_db(
-        "graph", "select * from graphs LIMIT 10000", "get_all_graph_properties", 0, 0
+        "graph", "select * from graphs LIMIT 10000", "get_all_graph_properties", 1, 0
     )
     # tests = {
     #     "graph_unified": {

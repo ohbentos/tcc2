@@ -81,7 +81,7 @@ class PGDatabase:
         if restart:
             self.drop_all_tables()
 
-        with open("./db/queries/create_3.sql") as f:
+        with open("./db/queries/create_three.sql") as f:
             self.cur.execute(f.read())
 
     def create_db_edge_primary(self, restart):
