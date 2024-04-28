@@ -130,14 +130,6 @@ SELECT
 FROM
   edges;
 
-DROP VIEW IF EXISTS graphs_with_vertices_filtered_view;
-CREATE OR REPLACE VIEW graphs_with_vertices_filtered_view AS
-SELECT
-  g.graph_id
-FROM
-  graphs g
-JOIN vertices v ON g.graph_id = v.graph_id;
-
 -- selects graph_id from vertices with ONE or more vertices with filter cond
 DROP VIEW IF EXISTS graphs_vertices_filtered_view;
 CREATE OR REPLACE VIEW graphs_vertices_filtered_view AS
@@ -177,27 +169,6 @@ JOIN (
 WHERE
   -- edges filters here
   e.p1 > 5;
-
-
-DROP VIEW IF EXISTS graphs_edges_filtered_view;
-CREATE OR REPLACE VIEW graphs_edges_filtered_view AS
-SELECT DISTINCT
-  e.graph_id
-FROM
-  edges e
-JOIN (
-  SELECT
-    graph_id
-  FROM
-    graphs g
-  WHERE 
-    -- graphs filters here
-    g.p1 > 15
-) g ON g.graph_id = e.graph_id
-WHERE
-  -- edges filters here
-  e.p1 > 5;
-
 
 -- select graph_ids from graphs with ONE or more vertices and edges with filter cond
 -- SELECT DISTINCT graph_id FROM ( SELECT * FROM graphs_edges_filtered_view WHERE g_p1 > 15 AND e_p1 < 10 AND v_p1 < 10) AS graph_ids LIMIT 1;
