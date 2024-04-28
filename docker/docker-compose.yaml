@@ -1,7 +1,5 @@
 services:
   graph_three:
-    # cgroup_parent: /docker_executor
-    # cpuset: "0,1"
     image: postgres:latest
     container_name: graph_three
     volumes:
@@ -15,8 +13,6 @@ services:
 
 
   graph_unified:
-    # cgroup_parent: /docker_executor
-    # cpuset: "0,1"
     image: postgres:latest
     container_name: graph_unified
     volumes:
@@ -30,8 +26,6 @@ services:
 
 
   graph_jsonb:
-    # cgroup_parent: /docker_executor
-    # cpuset: "0,1"
     image: postgres:latest
     container_name: graph_jsonb
     volumes:
@@ -45,8 +39,6 @@ services:
 
 
   graph_vertice:
-    # cgroup_parent: /docker_executor
-    # cpuset: "0,1,2,3,4,5"
     image: postgres:latest
     container_name: graph_vertice
     volumes:
@@ -60,8 +52,6 @@ services:
 
 
   graph_edge:
-    # cgroup_parent: /docker_executor
-    # cpuset: "0,1,2,3,4,5"
     image: postgres:latest
     container_name: graph_edge
     volumes:
