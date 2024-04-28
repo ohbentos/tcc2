@@ -77,7 +77,7 @@ class PGDatabase:
         with open("./db/queries/create_one.sql") as f:
             self.cur.execute(f.read())
 
-    def create_db_3_tables(self, restart):
+    def create_db_three(self, restart):
         if restart:
             self.drop_all_tables()
 

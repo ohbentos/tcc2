@@ -1,11 +1,11 @@
 services:
-  graph:
+  graph_three:
     # cgroup_parent: /docker_executor
     # cpuset: "0,1"
     image: postgres:latest
-    container_name: graph
+    container_name: graph_three
     volumes:
-      - graph:/var/lib/postgresql/data
+      - graph_three:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_PASSWORD=postgres
@@ -43,6 +43,7 @@ services:
     ports:
       - "8002:5432"
 
+
   graph_vertice:
     # cgroup_parent: /docker_executor
     # cpuset: "0,1,2,3,4,5"
@@ -57,6 +58,7 @@ services:
     ports:
       - "8003:5432"
 
+
   graph_edge:
     # cgroup_parent: /docker_executor
     # cpuset: "0,1,2,3,4,5"
@@ -70,6 +72,7 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "8004:5432"
+
 
   # test:
     # image: postgres:latest
@@ -89,8 +92,8 @@ networks:
 name: graph_pg_cluster
 
 volumes:
-  graph:
-    name: graph
+  graph_three:
+    name: graph_three
   graph_unified:
     name: graph_unified
   graph_jsonb:

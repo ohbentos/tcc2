@@ -10,19 +10,23 @@ from helpers.files import count_file_lines
 
 def main():
     # insert_data(PGDatabase(8001))
-    # insert_data_edge_primary(
-        # PGDatabase(8004),
-        # reset=False,
+    # insert_data_json(
+    #     PGDatabase(8002),
+    #     reset=False,
+    # )  # reset=True)
+    # insert_data_vertice_primary(
+    #     PGDatabase(8003),
+    #     reset=False,
     # )  # reset=True)
     pass
 
 
-def insert_data(db: PGDatabase, reset=False):
+def insert_data_three(db: PGDatabase, reset=False):
     grafos_file = open("./data/grafos_10_a_20.txt", "r")
     props_file = open("./data/metricas.limpo.txt", "r")
 
     db.start()
-    db.create_db_3_tables(reset)
+    db.create_db_three(reset)
 
     i = 0
     for graph_line in tqdm(
@@ -480,5 +484,3 @@ ARRAY[\n{",".join([f"\n  ROW({x})\n" for x in edges_value_list])}]::edge[],
 
 if __name__ == "__main__":
     main()
-
-# 3:41:45 to insert
