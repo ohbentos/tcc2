@@ -1,5 +1,6 @@
 services:
   graph_three:
+    shm_size: '5gb'
     image: postgres:latest
     container_name: graph_three
     volumes:
@@ -13,6 +14,7 @@ services:
 
 
   graph_unified:
+    shm_size: '5gb'
     image: postgres:latest
     container_name: graph_unified
     volumes:
@@ -26,6 +28,7 @@ services:
 
 
   graph_jsonb:
+    shm_size: '5gb'
     image: postgres:latest
     container_name: graph_jsonb
     volumes:
@@ -39,6 +42,7 @@ services:
 
 
   graph_vertice:
+    shm_size: '5gb'
     image: postgres:latest
     container_name: graph_vertice
     volumes:
@@ -52,6 +56,7 @@ services:
 
 
   graph_edge:
+    shm_size: '5gb'
     image: postgres:latest
     container_name: graph_edge
     volumes:

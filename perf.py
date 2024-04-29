@@ -6,10 +6,13 @@ from multiprocessing import Queue
 from multiprocessing.synchronize import Event
 
 from container import get_container_info
+from cpuset import set_cpus
 from db.postgres import PGDatabase
 from monitor import (SLEEP_TIME, count_io_cgroups, monitor_pid,
                      monitor_python_process)
 from statistic import calculate_statistics
+from tests import tests
+from tests import shared_tests
 
 
 def run_query(db: PGDatabase, query: str, done_event: Event):
@@ -102,33 +105,18 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
 
 
 if __name__ == "__main__":
-    test_db(
-        "graph", "select * from graphs LIMIT 10000", "get_all_graph_properties", 1, 0
-    )
-    # tests = {
-    #     "graph_unified": {
-    #         "get_all_graph_properties": [
-    #             "SELECT * from graphs LIMIT 1",
-    #             "SELECT * from graphs LIMIT 10",
-    #             "SELECT * from graphs LIMIT 100",
-    #             "SELECT * from graphs LIMIT 1000",
-    #             "SELECT * from graphs LIMIT 10000",
-    #             "SELECT * from graphs LIMIT 100000",
-    #             "SELECT * from graphs LIMIT 1000000",
-    #         ],
-    #         "get_only_graph_properties": ["SELECT graph_id,"],
-    #     }
-    # }
+    tests = tests
 
-    # MAX_RUNS = 5
+    exit(0)
+    # MAX_RUNS = 3
 
     # for cpus in range(1, 9):
     #     set_cpus(cpus)
     #     time.sleep(5)
 
-    #     for run in range(0, MAX_RUNS):
+    #     for run in range(1, MAX_RUNS+1):
     #         for test in tests:
     #             for query in tests[test]["get_all_graph_properties"]:
     #                 print(f"{run} testing {test} with {cpus} cpus on query {query}")
-    #                 test_db(test, query, "get_all_graph_properties", cpus)
+    #                 test_db(test, query, "get_all_graph_properties", cpus,run)
     #                 time.sleep(5)

@@ -27,7 +27,7 @@ FROM
 DROP VIEW IF EXISTS vertice_view;
 CREATE OR REPLACE VIEW vertice_view AS
 SELECT
-  g.graph_id, g.edges
+  g.graph_id, g.vertices
 FROM
   graphs g;
 
@@ -44,7 +44,6 @@ SELECT
   g.*
 FROM 
   graphs g;
-
 
 DROP VIEW IF EXISTS get_vertice_view;
 CREATE OR REPLACE VIEW get_vertice_view AS
@@ -133,7 +132,6 @@ AND (
   -- graph filter
   g.p1 = 15
 );
-
 
 -- filters graph based on all vertices
 DROP VIEW IF EXISTS graphs_vertices_all_filtered_view;
