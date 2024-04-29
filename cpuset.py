@@ -12,5 +12,5 @@ def set_cpus(cpus: int):
         stdout=subprocess.PIPE,
     )
 
-    with open("/sys/fs/cgroup/docker.slice/cpuset.cpus", "r") as f:
-        print(f"cpus set to: {f.read()}")
+    # with open("/sys/fs/cgroup/docker.slice/cpuset.cpus", "r") as f:
+    print(f"cpus set to: {cpus}")

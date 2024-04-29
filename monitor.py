@@ -34,7 +34,10 @@ def monitor_pid(pid: int, done_event, output_queue):
 
         # Initialize CPU usage calculation for each process
         for process in processes:
-            process.cpu_percent(interval=None)  # Immediate call to start measuring
+            try:
+                process.cpu_percent(interval=None)  # Immediate call to start measuring
+            except psutil.NoSuchProcess:
+                continue
         initial_cpu_usage = read_cpu_usage(CGROUP_PATH)
 
         # Calculate how much time to sleep by subtracting the elapsed time from SLEEP_TIME
@@ -53,8 +56,10 @@ def monitor_pid(pid: int, done_event, output_queue):
         for process in processes:
             try:
                 total_memory_usage += process.memory_info().rss  # RSS memory in bytes
-            except psutil.NoSuchProcess:
-                continue  # The process has ended or doesn't exist anymore
+            except (
+                psutil.NoSuchProcess
+            ):  # The process has ended or doesn't exist anymore
+                continue
 
         s = {"cpu": cpu_percentage, "mem": total_memory_usage}
         stats.append(s)
@@ -81,25 +86,24 @@ def monitor_python_process(process: Process, done_event: Event, output_queue: Qu
     usage_stats = []
     ps = psutil.Process(process.pid)
     PID = process.pid
-    try:
-        print("Starting to monitor client perf")
-        while not done_event.is_set():
-            start_time = time.time()  # Record the start time of the monitoring
-
+    print("Starting to monitor client perf")
+    while not done_event.is_set():
+        start_time = time.time()  # Record the start time of the monitoring
+        try:
             cpu_usage = ps.cpu_percent(interval=None)
             memory_usage = ps.memory_info().rss  # in bytes
-            usage_stats.append({"cpu": cpu_usage, "mem": memory_usage})
+        except psutil.NoSuchProcess:
+            break  # Handle the exception as necessary
+        usage_stats.append({"cpu": cpu_usage, "mem": memory_usage})
 
-            elapsed_time = time.time() - start_time  # Calculate the elapsed time
-            remaining_sleep_time = max(
-                0, SLEEP_TIME - elapsed_time
-            )  # Calculate the remaining time to sleep
-            time.sleep(remaining_sleep_time)  # Sleep only for the remaining time
-    except psutil.NoSuchProcess:
-        pass  # Handle the exception as necessary
-    finally:
-        print("Exiting client perf")
-        output_queue.put(usage_stats)
+        elapsed_time = time.time() - start_time  # Calculate the elapsed time
+        remaining_sleep_time = max(
+            0, SLEEP_TIME - elapsed_time
+        )  # Calculate the remaining time to sleep
+        time.sleep(remaining_sleep_time)  # Sleep only for the remaining time
+
+    print("Exiting client perf")
+    output_queue.put(usage_stats)
 
 
 def read_cpu_usage(cgroup_path):

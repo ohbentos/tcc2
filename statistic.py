@@ -1,21 +1,23 @@
-from typing import Dict, TypedDict
+from typing import Dict
 
 import numpy as np
-
-
-class Result(TypedDict):
-    mem: float
-    cpu: float
 
 
 def calculate_statistics(result: Dict[str, float]) -> Dict:
     stats = {}
     data = np.array([x["mem"] for x in result])  # type: ignore
-    mean = np.mean(data).astype(float)
-    median = np.median(data).astype(float)
-    variance = np.var(data).astype(float)
-    min = np.min(data).astype(float)
-    max = np.max(data).astype(float)
+    if len(data) != 0:
+        mean = np.mean(data).astype(float)
+        median = np.median(data).astype(float)
+        variance = np.var(data).astype(float)
+        min = np.min(data).astype(float)
+        max = np.max(data).astype(float)
+    else:
+        mean = 0
+        median = 0
+        variance = 0
+        min = 0
+        max = 0
 
     stats["mem"] = {
         "mean": mean,
@@ -27,11 +29,18 @@ def calculate_statistics(result: Dict[str, float]) -> Dict:
     }
 
     data = np.array([x["cpu"] for x in result])  # type: ignore
-    mean = np.mean(data).astype(float)
-    median = np.median(data).astype(float)
-    variance = np.var(data).astype(float)
-    min = np.min(data).astype(float)
-    max = np.max(data).astype(float)
+    if len(data) != 0:
+        mean = np.mean(data).astype(float)
+        median = np.median(data).astype(float)
+        variance = np.var(data).astype(float)
+        min = np.min(data).astype(float)
+        max = np.max(data).astype(float)
+    else:
+        mean = 0
+        median = 0
+        variance = 0
+        min = 0
+        max = 0
 
     stats["cpu"] = {
         "mean": mean,

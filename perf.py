@@ -11,8 +11,7 @@ from db.postgres import PGDatabase
 from monitor import (SLEEP_TIME, count_io_cgroups, monitor_pid,
                      monitor_python_process)
 from statistic import calculate_statistics
-from tests import tests
-from tests import shared_tests
+from tests import shared_tests, tests
 
 
 def run_query(db: PGDatabase, query: str, done_event: Event):
@@ -28,7 +27,7 @@ def run_query(db: PGDatabase, query: str, done_event: Event):
         done_event.set()
 
 
-def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run: int):
+def test_db(db_name: str, query: str, query_id: str, test_name: str | None, cpu_count: int, run: int):
     db_info = get_container_info(db_name)
     db = PGDatabase(db_info["port"])
     pid = db_info["pid"]
@@ -93,6 +92,7 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
         "db_name": db_name,
         "cpu_count": cpu_count,
         "run_number": run,
+        "query": query,
     }
 
     if test_name is not None:
@@ -107,16 +107,18 @@ def test_db(db_name: str, query: str, test_name: str | None, cpu_count: int, run
 if __name__ == "__main__":
     tests = tests
 
-    exit(0)
-    # MAX_RUNS = 3
+    MAX_RUNS = 3
 
-    # for cpus in range(1, 9):
-    #     set_cpus(cpus)
-    #     time.sleep(5)
+    for cpus in range(1, 9):
+        set_cpus(cpus)
+        time.sleep(3)
 
-    #     for run in range(1, MAX_RUNS+1):
-    #         for test in tests:
-    #             for query in tests[test]["get_all_graph_properties"]:
-    #                 print(f"{run} testing {test} with {cpus} cpus on query {query}")
-    #                 test_db(test, query, "get_all_graph_properties", cpus,run)
-    #                 time.sleep(5)
+        for run in range(1, MAX_RUNS+1):
+            for database in tests:
+                for test_name in tests[database]:
+                    for query in tests[database][test_name]:
+                        q = list(query.keys())[0]
+                        qid = list(query.values())[0]
+                        print(f"{run} testing db {database} on test {test_name} with {cpus} cpus on query {qid}-{q}")
+                        test_db(database, q, qid, test_name, cpus,run)
+                        time.sleep(3)
