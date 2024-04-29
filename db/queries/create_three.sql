@@ -125,7 +125,10 @@ JOIN
 JOIN
   edges e ON g.graph_id = e.graph_id
 WHERE
-  v.p1 > 9;
+  --  vertice filter
+  v.p1 > 9
+  --  graphs filter
+  AND g.p1 > 9;
 
  -- example filter all vertices
 DROP VIEW IF EXISTS graphs_vertices_all_filtered_view;
@@ -137,10 +140,10 @@ FROM
 JOIN (
   SELECT
     graph_id,
-    -- add vertice filters here
     bool_and(
+      --  vertice filter
       p1 > 5
-    ) AS vertice_filter -- add vertice filter
+    ) AS vertice_filter
   FROM
     edges
   GROUP BY
@@ -149,7 +152,8 @@ JOIN (
 WHERE
   v.vertice_filter 
 AND 
-  g.p1> 15;  -- add graph level filter
+  --  graphs filter
+  g.p1> 15;
 
  -- example filter all edges
 DROP VIEW IF EXISTS graphs_edges_all_filtered_view;
@@ -161,8 +165,8 @@ FROM
 JOIN (
   SELECT
     graph_id,
-    -- add edge filters here
     bool_and(
+    -- edges filter
       p1 > 5
     ) AS edge_filter
   FROM
@@ -173,7 +177,7 @@ JOIN (
 WHERE
   e.edge_filter
 AND
-  -- add graph level filters here
+  --  graphs filter
   g.p1 > 0;
 
 -- filters all edges and vertices
@@ -208,4 +212,5 @@ JOIN (
     graph_id
 ) v ON g.graph_id = v.graph_id AND v.vertice_filter
 WHERE
+  --  graphs filter
   g.p1 > 10;

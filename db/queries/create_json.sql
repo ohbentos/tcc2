@@ -128,6 +128,7 @@ WHERE (
   FROM jsonb_array_elements(vertices) AS v
 )
 AND (
+  --  graphs filter
   g.p1 > 10
 );
 
@@ -146,6 +147,7 @@ WHERE (
   FROM jsonb_array_elements(edges) AS e
 )
 AND (
+  --  graphs filter
   g.p1 > 10
 );
 
@@ -171,5 +173,6 @@ AND (
   FROM jsonb_array_elements(edges) AS e
 )
 AND (
+  --  graphs filter
   g.p1 > 10
 );
