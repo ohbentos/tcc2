@@ -5,13 +5,16 @@ import time
 from multiprocessing import Queue
 from multiprocessing.synchronize import Event
 
+from matplotlib.pyplot import plot
+
 from container import get_container_info
 from cpuset import set_cpus
 from db.postgres import PGDatabase
 from monitor import (SLEEP_TIME, count_io_cgroups, monitor_pid,
                      monitor_python_process)
+from plot import save_plot
 from statistic import calculate_statistics
-from tests import shared_tests, tests
+from tests import tests
 
 
 def run_query(db: PGDatabase, query: str, done_event: Event):
@@ -96,12 +99,14 @@ def test_db(db_name: str, query: str, query_id: str, test_name: str | None, cpu_
     }
 
     if test_name is not None:
-        file_name = f"./results/{db_name}/{cpu_count}/{run}_{test_name}_{query}.json"
+        file_name = f"./results/{db_name}/{cpu_count}/{run}_{query_id}_{test_name}.json"
 
         os.makedirs(os.path.dirname(file_name), exist_ok=True)
         with open(file_name, "w") as f:
             json.dump(results, f)
             print(f"Results saved to:\n{file_name.replace(' ','\\ ').replace('*','\\*').replace('?','\\?')}")
+
+        save_plot(file_name)
 
 
 if __name__ == "__main__":
