@@ -1,4 +1,6 @@
 # format: "query" : "name"
+from functools import partial
+
 import filters
 
 shared_tests = {
@@ -46,20 +48,289 @@ shared_tests = {
     ],
 }
 
+shared_tests = {}
 
-tests = {
-    "graph_unified": {
-        "graphs_vertices_filtered": [
-            {
-                filters.graphs_vertices_filtered(
-                    "graph_unified", "g.p1 > 5", "v.p1 > 4", "10"
-                ): "10"
-            }
+graphs_vertices_filtered_f1 = partial(
+    filters.graphs_vertices_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5",
+)
+graphs_vertices_filtered_f2 = partial(
+    filters.graphs_vertices_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5 AND v.p3 > 3",
+)
+graphs_vertices_filtered_f3 = partial(
+    filters.graphs_vertices_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5 AND v.p1 > 2 AND v.p4 > 5",
+)
+graphs_vertices_filtered_f4 = partial(
+    filters.graphs_vertices_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5 AND v.p1 > 2 AND v.p4 > 5 AND v.p5 > 3",
+)
+graphs_edges_filtered_f1 = partial(
+    filters.graphs_edges_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 5",
+)
+graphs_edges_filtered_f2 = partial(
+    filters.graphs_edges_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 5 AND e.p3 > 3",
+)
+graphs_edges_filtered_f3 = partial(
+    filters.graphs_edges_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 5 AND e.p3 > 3 AND e.p4 > 5",
+)
+graphs_edges_filtered_f4 = partial(
+    filters.graphs_edges_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 5 AND e.p1 > 3 AND e.p4 > 4 AND e.p5 > 3",
+)
+graphs_filtered_f1 = partial(
+    filters.graphs_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5",
+    edge_filter="e.p1 > 5",
+)
+graphs_filtered_f2 = partial(
+    filters.graphs_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5 AND v.p3 > 3",
+    edge_filter="e.p1 > 5 AND e.p3 > 3",
+)
+graphs_filtered_f3 = partial(
+    filters.graphs_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5 AND v.p1 > 2 AND v.p4 > 5",
+    edge_filter="e.p1 > 5 AND e.p1 > 2 AND e.p4 > 5",
+)
+graphs_filtered_f4 = partial(
+    filters.graphs_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 5 AND v.p1 > 2 AND v.p4 > 5 AND v.p5 > 3",
+    edge_filter="e.p1 > 5 AND e.p1 > 2 AND e.p4 > 5 AND e.p5 > 3",
+)
+graphs_vertices_all_filtered_f1 = partial(
+    filters.graphs_vertices_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2",
+)
+graphs_vertices_all_filtered_f2 = partial(
+    filters.graphs_vertices_all_filtered,
+    graph_filter="g.p1 > 10 ",
+    vertice_filter="v.p1 > 2 AND v.p3 > 3",
+)
+graphs_vertices_all_filtered_f3 = partial(
+    filters.graphs_vertices_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2 AND v.p3 > 3 AND v.p4 > 2",
+)
+graphs_vertices_all_filtered_f4 = partial(
+    filters.graphs_vertices_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2 AND v.p3 > 3 AND v.p4 > 2 AND v.p5 > 3",
+)
+graphs_edges_all_filtered_f1 = partial(
+    filters.graphs_edges_all_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 2",
+)
+graphs_edges_all_filtered_f2 = partial(
+    filters.graphs_edges_all_filtered,
+    graph_filter="g.p1 > 10 ",
+    edge_filter="e.p1 > 2 AND e.p3 > 3",
+)
+graphs_edges_all_filtered_f3 = partial(
+    filters.graphs_edges_all_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 2 AND e.p3 > 3 AND e.p4 > 2",
+)
+graphs_edges_all_filtered_f4 = partial(
+    filters.graphs_edges_all_filtered,
+    graph_filter="g.p1 > 10",
+    edge_filter="e.p1 > 2 AND e.p3 > 3 AND e.p4 > 2 AND e.p5 > 3",
+)
+graphs_all_filtered_f1 = partial(
+    filters.graphs_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2.2",
+    edge_filter="e.p1 > 2.2",
+)
+graphs_all_filtered_f2 = partial(
+    filters.graphs_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2.2 AND v.p2 > 2.3",
+    edge_filter="e.p1 > 2.2 AND e.p2 > 2.3",
+)
+graphs_all_filtered_f3 = partial(
+    filters.graphs_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2.2 AND v.p2 > 2.3 AND v.p3 > 2.4",
+    edge_filter="e.p1 > 2.2 AND e.p2 > 2.3 AND e.p3 > 2.4",
+)
+graphs_all_filtered_f4 = partial(
+    filters.graphs_all_filtered,
+    graph_filter="g.p1 > 10",
+    vertice_filter="v.p1 > 2.2 AND v.p2 > 2.3 AND v.p3 > 2.4 AND v.p4 > 2.5",
+    edge_filter="e.p1 > 2.2 AND e.p2 > 2.3 AND e.p3 > 2.4 AND e.p4 > 2.5",
+)
+
+
+def get_tests(db_name: str):
+    global shared_tests
+
+    filtered_tests = {
+        "graphs_vertices_filtered_f1": [
+            {graphs_vertices_filtered_f1(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_filtered_f1(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_filtered_f1(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_filtered_f1(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_filtered_f2": [
+            {graphs_vertices_filtered_f2(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_filtered_f2(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_filtered_f2(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_filtered_f2(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_filtered_f3": [
+            {graphs_vertices_filtered_f3(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_filtered_f3(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_filtered_f3(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_filtered_f3(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_filtered_f4": [
+            {graphs_vertices_filtered_f4(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_filtered_f4(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_filtered_f4(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_filtered_f4(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_filtered_f1": [
+            {graphs_edges_filtered_f1(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_filtered_f1(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_filtered_f1(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_filtered_f1(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_filtered_f2": [
+            {graphs_edges_filtered_f2(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_filtered_f2(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_filtered_f2(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_filtered_f2(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_filtered_f3": [
+            {graphs_edges_filtered_f3(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_filtered_f3(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_filtered_f3(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_filtered_f3(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_filtered_f4": [
+            {graphs_edges_filtered_f4(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_filtered_f4(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_filtered_f4(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_filtered_f4(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_filtered_f1": [
+            {graphs_filtered_f1(db_name=db_name, limit="1"): "1"},
+            {graphs_filtered_f1(db_name=db_name, limit="10"): "10"},
+            {graphs_filtered_f1(db_name=db_name, limit="100"): "100"},
+            {graphs_filtered_f1(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_filtered_f2": [
+            {graphs_filtered_f2(db_name=db_name, limit="1"): "1"},
+            {graphs_filtered_f2(db_name=db_name, limit="10"): "10"},
+            {graphs_filtered_f2(db_name=db_name, limit="100"): "100"},
+            {graphs_filtered_f2(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_filtered_f3": [
+            {graphs_filtered_f3(db_name=db_name, limit="1"): "1"},
+            {graphs_filtered_f3(db_name=db_name, limit="10"): "10"},
+            {graphs_filtered_f3(db_name=db_name, limit="100"): "100"},
+            {graphs_filtered_f3(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_filtered_f4": [
+            {graphs_filtered_f4(db_name=db_name, limit="1"): "1"},
+            {graphs_filtered_f4(db_name=db_name, limit="10"): "10"},
+            {graphs_filtered_f4(db_name=db_name, limit="100"): "100"},
+            {graphs_filtered_f4(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_all_filtered_f1": [
+            {graphs_vertices_all_filtered_f1(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_all_filtered_f1(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_all_filtered_f1(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_all_filtered_f1(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_all_filtered_f2": [
+            {graphs_vertices_all_filtered_f2(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_all_filtered_f2(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_all_filtered_f2(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_all_filtered_f2(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_all_filtered_f3": [
+            {graphs_vertices_all_filtered_f3(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_all_filtered_f3(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_all_filtered_f3(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_all_filtered_f3(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_vertices_all_filtered_f4": [
+            {graphs_vertices_all_filtered_f4(db_name=db_name, limit="1"): "1"},
+            {graphs_vertices_all_filtered_f4(db_name=db_name, limit="10"): "10"},
+            {graphs_vertices_all_filtered_f4(db_name=db_name, limit="100"): "100"},
+            {graphs_vertices_all_filtered_f4(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_all_filtered_f1": [
+            {graphs_edges_all_filtered_f1(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_all_filtered_f1(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_all_filtered_f1(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_all_filtered_f1(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_all_filtered_f2": [
+            {graphs_edges_all_filtered_f2(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_all_filtered_f2(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_all_filtered_f2(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_all_filtered_f2(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_all_filtered_f3": [
+            {graphs_edges_all_filtered_f3(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_all_filtered_f3(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_all_filtered_f3(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_all_filtered_f3(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_edges_all_filtered_f4": [
+            {graphs_edges_all_filtered_f4(db_name=db_name, limit="1"): "1"},
+            {graphs_edges_all_filtered_f4(db_name=db_name, limit="10"): "10"},
+            {graphs_edges_all_filtered_f4(db_name=db_name, limit="100"): "100"},
+            {graphs_edges_all_filtered_f4(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_all_filtered_f1": [
+            {graphs_all_filtered_f1(db_name=db_name, limit="1"): "1"},
+            {graphs_all_filtered_f1(db_name=db_name, limit="10"): "10"},
+            {graphs_all_filtered_f1(db_name=db_name, limit="100"): "100"},
+            {graphs_all_filtered_f1(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_all_filtered_f2": [
+            {graphs_all_filtered_f2(db_name=db_name, limit="1"): "1"},
+            {graphs_all_filtered_f2(db_name=db_name, limit="10"): "10"},
+            {graphs_all_filtered_f2(db_name=db_name, limit="100"): "100"},
+            {graphs_all_filtered_f2(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_all_filtered_f3": [
+            {graphs_all_filtered_f3(db_name=db_name, limit="1"): "1"},
+            {graphs_all_filtered_f3(db_name=db_name, limit="10"): "10"},
+            {graphs_all_filtered_f3(db_name=db_name, limit="100"): "100"},
+            {graphs_all_filtered_f3(db_name=db_name, limit="1000"): "1000"},
+        ],
+        "graphs_all_filtered_f4": [
+            {graphs_all_filtered_f4(db_name=db_name, limit="1"): "1"},
+            {graphs_all_filtered_f4(db_name=db_name, limit="10"): "10"},
+            {graphs_all_filtered_f4(db_name=db_name, limit="100"): "100"},
+            {graphs_all_filtered_f4(db_name=db_name, limit="1000"): "1000"},
         ],
     }
-}
 
+    for key, value in filtered_tests.items():
+        shared_tests[key] = value
 
-# for t in tests:
-#     for st in shared_tests:
-#         tests[t][st] = shared_tests[st]
+    return shared_tests

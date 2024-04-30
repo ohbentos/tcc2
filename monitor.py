@@ -43,7 +43,7 @@ def monitor_pid(pid: int, done_event, output_queue):
         # Calculate how much time to sleep by subtracting the elapsed time from SLEEP_TIME
         elapsed_time = time.time_ns() - loop_start_time
         sleep_time = max(
-            0, SLEEP_TIME - (elapsed_time / 1000000000)
+            0, SLEEP_TIME - (elapsed_time / 1_000_000_000)
         )  # Ensure sleep_time is not negative
         time.sleep(sleep_time)  # Sleep for the calculated duration
 
@@ -111,15 +111,7 @@ def read_cpu_usage(cgroup_path):
     Read CPU usage in microseconds from the cgroup cpu.stat file.
     """
     with open(f"{cgroup_path}/cpu.stat", "r") as file:
-        lines = file.readlines()
-        usage_usec = 0
-        for line in lines:
-            if "usage_usec" in line:
-                _, usage_usec = line.split()
-                usage_usec = int(usage_usec)
-                break
-    return usage_usec
-
+        return int(file.readline()[11:])
 
 # def calculate_cpu_usage(cgroup_path, num_cores, interval=0.1):
 #     """

@@ -131,3 +131,12 @@ def save_plot(file_name: str, run_config: dict):
 
         plt.tight_layout()
         fig.savefig(file_name.replace(".json", ".png"))
+
+        # plt_client_cpu.cla()
+        # plt_client_mem.cla()
+        # plt_server_cpu.cla()
+        # plt_server_mem.cla()
+
+        # fig.clf()
+        # plt.close(fig)
+        plt.close("all")
