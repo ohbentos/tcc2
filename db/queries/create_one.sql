@@ -125,7 +125,7 @@ AND EXISTS (
   FROM 
     unnest(vertices) AS v(vertice)
   WHERE 
-  -- edges filter
+  -- vertices filter
     v.p1 > 8 
 )
 AND (
@@ -139,17 +139,17 @@ CREATE OR REPLACE VIEW graphs_vertices_all_filtered_view AS
 SELECT 
   graph_id
 FROM 
-  graphs
+  graphs g
 WHERE (
   SELECT bool_and(
     -- vertice filter
-    v.p1 > 5
+    -- v.p1 > 5
   )
   FROM unnest(vertices) AS v
 )
 AND (
     -- graph filter
-  p1 = 15
+  g.p1 = 15
 );
 
 -- filters graph based on all edges
@@ -158,7 +158,7 @@ CREATE OR REPLACE VIEW graphs_edges_all_filtered_view AS
 SELECT 
   graph_id
 FROM 
-  graphs
+  graphs g
 WHERE (
   SELECT bool_and(
     -- edges filter
@@ -168,7 +168,7 @@ WHERE (
 )
 AND (
     -- graph filter
-  p1 = 15
+  g.p1 = 15
 );
 
 -- filters graph based all edges and vertices
@@ -177,7 +177,7 @@ CREATE OR REPLACE VIEW graphs_all_filtered_view AS
 SELECT 
   graph_id
 FROM 
-  graphs
+  graphs g
 WHERE (
   SELECT bool_and(
     -- edges filter
@@ -194,5 +194,5 @@ AND (
 )
 AND (
     -- graph filter
-  p1 = 15
+  g.p1 = 15
 );

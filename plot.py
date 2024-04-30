@@ -3,22 +3,39 @@ import json
 import matplotlib.pyplot as plt
 
 
-def stats_to_str(stats: dict) -> str:
-    s = ""
-    space = len(max(stats.keys()))
-    for k, v in stats.items():
-        v2 = "{:.2f}".format(v)
-        size = len(k)
-        s += f"{(space-size)*' '}{k}: {v2}\n"
+def stats_to_str(stats: dict, divide=1) -> str:
+    s = f"""mean    : {stats["mean"]/divide:.2f}
+median  : {stats["median"]/divide:.2f}
+min     : {stats["min"]/divide:.2f}
+max     : {stats["max"]/divide:.2f}
+samples : {stats["samples"]}
+std_dev : {stats["std_deviation"]/divide:.2f}
+perc_99 : {stats["perc_99"]/divide:.2f}
+perc_95 : {stats["perc_95"]/divide:.2f}
+perc_90 : {stats["perc_90"]/divide:.2f}
+perc_75 : {stats["perc_75"]/divide:.2f}
+perc_50 : {stats["perc_50"]/divide:.2f}"""
     return s
 
 
-def save_plot(file_name: str):
+def save_plot(file_name: str, run_config: dict):
     with open(
         file_name,
         "r",
     ) as f:
-        fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+        fig, axs = plt.subplots(2, 2, figsize=(16, 10))
+
+        test_name = run_config["test_name"]
+        test_id = run_config["test_id"]
+        cpu_count = run_config["cpu_count"]
+        db_name = run_config["db_name"]
+        run_number = run_config["run_number"]
+        test_id = run_config["test_id"]
+
+        fig.suptitle(
+            f"Run:{run_number} Name:{db_name} Test:{test_name}-{test_id} CPUs:{cpu_count}",
+            fontsize=16,
+        )
 
         plt.subplots()
         plt_server_cpu = axs[0, 0]
@@ -69,7 +86,7 @@ def save_plot(file_name: str):
         fig.text(
             0,
             0,
-            stats_to_str(server_stats_mem),
+            stats_to_str(server_stats_mem, divide=1_000_000),
             va="bottom",
             ha="left",
             transform=fig.transFigure,
@@ -105,7 +122,7 @@ def save_plot(file_name: str):
         fig.text(
             1,
             0,
-            stats_to_str(client_stats_mem),
+            stats_to_str(client_stats_mem, divide=1_000_000),
             va="bottom",
             ha="right",
             transform=fig.transFigure,

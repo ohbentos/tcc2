@@ -96,6 +96,8 @@ def test_db(db_name: str, query: str, query_id: str, test_name: str | None, cpu_
         "cpu_count": cpu_count,
         "run_number": run,
         "query": query,
+        "test_name": test_name,
+        "test_id": query_id,
     }
 
     if test_name is not None:
@@ -106,7 +108,7 @@ def test_db(db_name: str, query: str, query_id: str, test_name: str | None, cpu_
             json.dump(results, f)
             print(f"Results saved to:\n{file_name.replace(' ','\\ ').replace('*','\\*').replace('?','\\?')}")
 
-        save_plot(file_name)
+        save_plot(file_name,results["run_config"])
 
 
 if __name__ == "__main__":
