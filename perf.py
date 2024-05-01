@@ -5,28 +5,40 @@ import time
 from multiprocessing import Queue
 from multiprocessing.synchronize import Event
 
+from cgroups import count_io_cgroups, set_cpus, set_pid_to_cgroup
 from container import get_container_info
-from cpuset import set_cpus
 from db.postgres import PGDatabase
-from monitor import (SLEEP_TIME, count_io_cgroups, monitor_pid,
-                     monitor_python_process)
+from monitor import SLEEP_TIME, monitor_cgroup
 from plot import save_plot
 from statistic import calculate_statistics
 from tests import get_tests
 
 
-def run_query(db: PGDatabase, query: str, done_event: Event, queue: Queue):
+def run_query(
+    db: PGDatabase, query: str, done_event: Event, queue: Queue, lets_go: Event
+):
+    set_pid_to_cgroup(os.getpid(), "client")
+    io_before = count_io_cgroups("client")
+    time.sleep(0.150)
+
+    lets_go.set()
+
+    records = 0
     try:
         db.execute(query)
-        records = db.cur.fetchall()
-        queue.put(len(records) or 0)
+        records = len(db.cur.fetchall())
         db.cur.close()
         db.conn.close()
+        done_event.set()
     except Exception as e:
         print(f"Error executing query: {e}")
     finally:
+        io_after = count_io_cgroups("client")
+        read = io_after[0] - io_before[0]
+        write = io_after[1] - io_before[1]
+        queue.put({"io": {f"read": read, "write": write}, "records": records})
+
         print("exiting run_query")
-        done_event.set()
 
 
 def test_db(
@@ -39,10 +51,11 @@ def test_db(
 ):
     db_info = get_container_info(db_name)
     db = PGDatabase(db_info["port"])
-    pid = db_info["pid"]
+    # pid = db_info["pid"]
 
     db.start()
 
+    lets_go = multiprocessing.Event()
     done_event = multiprocessing.Event()
 
     query_result_queue = Queue()
@@ -51,22 +64,22 @@ def test_db(
 
     query_process = multiprocessing.Process(
         target=run_query,
-        args=(db, query, done_event, query_result_queue),
+        args=(db, query, done_event, query_result_queue, lets_go),
         daemon=True,
     )
     client_perf_process = multiprocessing.Process(
-        target=monitor_python_process,
-        args=(query_process, done_event, client_results_queue),
+        target=monitor_cgroup,
+        args=("client", done_event, client_results_queue, lets_go, cpu_count),
         daemon=True,
     )
     client_perf_process.daemon
     server_perf_process = multiprocessing.Process(
-        target=monitor_pid,
-        args=(pid, done_event, server_results_queue),
+        target=monitor_cgroup,
+        args=("server", done_event, server_results_queue, lets_go, cpu_count),
         daemon=True,
     )
 
-    initial_io = count_io_cgroups()
+    initial_io = count_io_cgroups("server")
 
     query_start = time.time()
     query_process.start()
@@ -80,7 +93,8 @@ def test_db(
     server_perf_process.join()
 
     results = {}
-    results["records"] = query_result_queue.get()
+    qresult = query_result_queue.get()
+    results["records"] = qresult["records"]
     data = server_results_queue.get()
     results["server"] = {
         "samples": data,
@@ -88,12 +102,12 @@ def test_db(
     }
     data = client_results_queue.get()
     results["client"] = {
+        "io": qresult["io"],
         "samples": data,
         "stats": calculate_statistics(data),
     }
 
-    final_io = count_io_cgroups()
-
+    final_io = count_io_cgroups("server")
     read_bytes = final_io[0] - initial_io[0]
     write_bytes = final_io[1] - initial_io[1]
 

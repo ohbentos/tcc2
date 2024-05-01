@@ -19,9 +19,12 @@ def get_container_info(container_name: str):
             name = x.attrs["Name"][1:]
             cont[name] = {}
             cont[name]["id"] = x.id
-            host_port = list(x.attrs["HostConfig"]["PortBindings"].values())[0][0][
-                "HostPort"
-            ]
+            try:
+                host_port = list(x.attrs["HostConfig"]["PortBindings"].values())[0][0][
+                    "HostPort"
+                ]
+            except IndexError:
+                continue
             cont[name]["port"] = int(host_port)
             cont[name]["pid"] = int(pid)
 

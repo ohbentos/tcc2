@@ -3,7 +3,7 @@
 
 /bin/cat <<EOF > /etc/docker/daemon.json
 {
-    "cgroup-parent": "/docker_executor"
+    "cgroup-parent": "/server"
 }
 EOF
 
