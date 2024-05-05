@@ -68,6 +68,10 @@ def test_db(
         print(f"Skipping {file_name}")
         return
 
+    print(
+        f"{run} testing db {db_name} on test {test_name} with {cpus} cpus on query {qid}-{q}"
+    )
+
     db_info = get_container_info(db_name)
     db = PGDatabase(db_info["port"])
     # pid = db_info["pid"]
@@ -173,7 +177,7 @@ if __name__ == "__main__":
                 " "
             )
         )
-        time.sleep(10)
+        time.sleep(3)
         tests = get_tests(db_name)
         for cpus in range(1, 9):
             set_cpus(cpus)
@@ -184,8 +188,8 @@ if __name__ == "__main__":
                     for query in tests[test_name]:
                         q = list(query.keys())[0]
                         qid = list(query.values())[0]
-                        print(
-                            f"{run} testing db {db_name} on test {test_name} with {cpus} cpus on query {qid}-{q}"
-                        )
+                        # print(
+                        #     f"{run} testing db {db_name} on test {test_name} with {cpus} cpus on query {qid}-{q}"
+                        # )
                         test_db(db_name, q, qid, test_name, cpus, run)
                         print("\n")

@@ -316,4 +316,3 @@ OBS.: o número refere-se à coluna (a coluna 135 não foi considerada)
 316	Coefficient of Variation by Median of Subgraph Centrality
 317	SD of Subgraph Centrality
 318	Coefficient of Variation of Subgraph Centrality
- 

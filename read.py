@@ -11,7 +11,6 @@ ROOT_DIR = "results"
 def read_json_data(root_dir: str) -> pd.DataFrame:
     data = []
 
-    # Traverse through the directory structure
     for db_name in os.listdir(root_dir):
         db_path = os.path.join(root_dir, db_name)
         if os.path.isdir(db_path):
@@ -23,7 +22,7 @@ def read_json_data(root_dir: str) -> pd.DataFrame:
                             file_path = os.path.join(cpu_path, file_name)
                             with open(file_path, "r") as file:
                                 json_data = json.load(file)
-                                # Extract required data
+
                                 run_config = json_data.get("run_config")
                                 test_name = run_config.get("test_name")
                                 run_number = run_config.get("run_number")
@@ -49,7 +48,7 @@ def read_json_data(root_dir: str) -> pd.DataFrame:
                                 # client_mem_mean = client_mem.get("mean")
 
                                 time = json_data.get("time")
-                                # Append data to list
+
                                 data.append(
                                     {
                                         "Test Name": test_name,
@@ -88,7 +87,6 @@ def read_json_data(root_dir: str) -> pd.DataFrame:
 
 
 def aggregate_data(df: pd.DataFrame):
-    # Group by Database, CPUs, and Test Name, then calculate mean
     agg_df = (
         df.groupby(["Test Name", "Limit", "Database", "CPUs"])
         .mean()
@@ -111,7 +109,6 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
         "graph_vertice": "purple",
     }
 
-    # Group by Test Name
     grouped = df.groupby("Test Name")
 
     for test_name, group in grouped:
@@ -155,9 +152,9 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
             axs[i, 0].set_xlabel("Number of CPUs")
             axs[i, 1].set_xlabel("Number of CPUs")
             axs[i, 2].set_xlabel("Number of CPUs")
-            axs[i, 0].set_xticks(range(1, 9))  # assuming 1 to 8 CPUs
-            axs[i, 1].set_xticks(range(1, 9))  # assuming 1 to 8 CPUs
-            axs[i, 2].set_xticks(range(1, 9))  # assuming 1 to 8 CPUs
+            axs[i, 0].set_xticks(range(1, 9))
+            axs[i, 1].set_xticks(range(1, 9))
+            axs[i, 2].set_xticks(range(1, 9))
             axs[i, 0].legend()
             axs[i, 1].legend()
             axs[i, 2].legend()
