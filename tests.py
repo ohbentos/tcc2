@@ -48,8 +48,6 @@ shared_tests = {
     ],
 }
 
-shared_tests = {}
-
 graphs_vertices_filtered_f1 = partial(
     filters.graphs_vertices_filtered,
     graph_filter="g.p1 > 10",
@@ -329,6 +327,7 @@ def get_tests(db_name: str):
             {graphs_all_filtered_f4(db_name=db_name, limit="1000"): "1000"},
         ],
     }
+    # shared_tests = {}
 
     for key, value in filtered_tests.items():
         shared_tests[key] = value

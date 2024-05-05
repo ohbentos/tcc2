@@ -2,3 +2,5 @@ data/
 __pycache__
 results
 my_plot.png
+*.csv
+*.xlsx

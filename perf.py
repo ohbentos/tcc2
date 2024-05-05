@@ -1,6 +1,7 @@
 import json
 import multiprocessing
 import os
+import subprocess
 import time
 from multiprocessing import Queue
 from multiprocessing.synchronize import Event
@@ -24,20 +25,30 @@ def run_query(
     lets_go.set()
 
     records = 0
+    error = False
     try:
         db.execute(query)
         records = len(db.cur.fetchall())
         db.cur.close()
         db.conn.close()
-        done_event.set()
     except Exception as e:
         print(f"Error executing query: {e}")
+        error = True
     finally:
+        done_event.set()
         io_after = count_io_cgroups("client")
         read = io_after[0] - io_before[0]
         write = io_after[1] - io_before[1]
-        queue.put({"io": {f"read": read, "write": write}, "records": records})
-
+        if not error:
+            queue.put(
+                {
+                    "error": False,
+                    "io": {f"read": read, "write": write},
+                    "records": records,
+                }
+            )
+        else:
+            queue.put({"error": True})
         print("exiting run_query")
 
 
@@ -49,6 +60,14 @@ def test_db(
     cpu_count: int,
     run: int,
 ):
+    file_name = (
+        f"./results/{db_name}/{cpu_count}/{run}_{query_id}_{test_name}-{query_id}.json"
+    )
+
+    if os.path.exists(file_name):
+        print(f"Skipping {file_name}")
+        return
+
     db_info = get_container_info(db_name)
     db = PGDatabase(db_info["port"])
     # pid = db_info["pid"]
@@ -72,7 +91,6 @@ def test_db(
         args=("client", done_event, client_results_queue, lets_go, cpu_count),
         daemon=True,
     )
-    client_perf_process.daemon
     server_perf_process = multiprocessing.Process(
         target=monitor_cgroup,
         args=("server", done_event, server_results_queue, lets_go, cpu_count),
@@ -82,18 +100,17 @@ def test_db(
     initial_io = count_io_cgroups("server")
 
     query_start = time.time()
-    query_process.start()
 
+    query_process.start()
     client_perf_process.start()
     server_perf_process.start()
 
-    query_process.join()
-    query_execution_time = time.time() - query_start
-    client_perf_process.join()
-    server_perf_process.join()
-
     results = {}
     qresult = query_result_queue.get()
+    query_execution_time = time.time() - query_start
+    if qresult["error"] == True:
+        print("EXITING")
+        exit(1)
     results["records"] = qresult["records"]
     data = server_results_queue.get()
     results["server"] = {
@@ -124,8 +141,6 @@ def test_db(
     }
 
     if test_name is not None:
-        file_name = f"./results/{db_name}/{cpu_count}/{run}_{query_id}_{test_name}-{query_id}.json"
-
         os.makedirs(os.path.dirname(file_name), exist_ok=True)
         with open(file_name, "w") as f:
             json.dump(results, f)
@@ -138,10 +153,27 @@ def test_db(
 
 
 if __name__ == "__main__":
-    dbs_test = ["graph_unified"]
+    dbs_test = [
+        "graph_vertice",
+        "graph_edge",
+        "graph_unified",
+        "graph_jsonb",
+        "graph_three",
+    ]
 
     MAX_RUNS = 3
     for db_name in dbs_test:
+        subprocess.run(
+            f"docker compose -f /home/bento/tcc/docker/docker-compose.yaml down".split(
+                " "
+            )
+        )
+        subprocess.run(
+            f"docker compose -f /home/bento/tcc/docker/docker-compose.yaml up -d {db_name}".split(
+                " "
+            )
+        )
+        time.sleep(10)
         tests = get_tests(db_name)
         for cpus in range(1, 9):
             set_cpus(cpus)

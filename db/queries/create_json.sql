@@ -115,7 +115,7 @@ AND (
 
 -- filter on ALL vertice property
 DROP VIEW IF EXISTS graphs_vertices_all_filtered_view;
-CREATE OR REPLACE VIEW graphs_vertices_filtered_all_view AS
+CREATE OR REPLACE VIEW graphs_vertices_all_filtered_view AS
 SELECT 
   graph_id
 FROM 
@@ -134,7 +134,7 @@ AND (
 
 -- filter on ALL edge property
 DROP VIEW IF EXISTS graphs_edges_all_filtered_view;
-CREATE OR REPLACE VIEW graphs_edges_filtered_all_view AS
+CREATE OR REPLACE VIEW graphs_edges_all_filtered_view AS
 SELECT 
   graph_id
 FROM 
@@ -153,7 +153,7 @@ AND (
 
 -- filter on ALL vertice and edge property
 DROP VIEW IF EXISTS graphs_all_filtered_view;
-CREATE OR REPLACE VIEW graphs_filtered_all_view AS
+CREATE OR REPLACE VIEW graphs_all_filtered_view AS
 SELECT 
   graph_id
 FROM 
