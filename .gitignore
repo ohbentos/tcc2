@@ -5,3 +5,4 @@ my_plot.png
 *.csv
 *.xlsx
 plots/
+results-backup/

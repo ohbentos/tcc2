@@ -33,7 +33,7 @@ def save_plot(file_name: str, run_config: dict):
         test_id = run_config["test_id"]
 
         fig.suptitle(
-            f"Run:{run_number} Name:{db_name} Test:{test_name}-{test_id} CPUs:{cpu_count}",
+            f"Run:{run_number} Name:{db_name} Test:{test_name} Limit:{test_id} CPUs:{cpu_count}",
             fontsize=16,
         )
 

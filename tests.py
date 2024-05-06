@@ -46,6 +46,11 @@ shared_tests = {
         {"SELECT * FROM get_edge_view LIMIT 10000": "10000"},
         {"SELECT * FROM get_edge_view LIMIT 100000": "100000"},
     ],
+    "list_diameters": [
+        {
+            "SELECT p51 as diameter, array_agg(graph_id) AS graph_ids FROM graphs WHERE p51 > 2 GROUP BY p51 ORDER BY p51 ASC": None
+        },
+    ],
 }
 
 graphs_vertices_filtered_f1 = partial(

@@ -68,6 +68,17 @@ services:
     ports:
       - "8004:5432"
 
+  neo4j_separated:
+    image: neo4j
+    container_name: neo4j_separated
+    volumes:
+      - neo4j_separated:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    ports:
+      - "3011:7687"
+      - "3010:7474"
+
 
   # test:
     # image: postgres:latest
@@ -97,3 +108,5 @@ volumes:
     name: graph_vertice
   graph_edge:
     name: graph_edge
+  neo4j_separated:
+    name: neo4j_separated

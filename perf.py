@@ -60,8 +60,10 @@ def test_db(
     cpu_count: int,
     run: int,
 ):
+    if query_id == None:
+        query_id = "None"
     file_name = (
-        f"./results/{db_name}/{cpu_count}/{run}_{query_id}_{test_name}-{query_id}.json"
+        f"./results/{db_name}/{cpu_count}/{run}_{test_name}-{query_id}.json"
     )
 
     if os.path.exists(file_name):
