@@ -120,6 +120,7 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
         fig, axs = plt.subplots(
             num_limits, 3, figsize=(18, 6 * num_limits), squeeze=False
         )
+        fig.suptitle(t)
         for i, limit in enumerate(unique_limits):
             axs[i, 0].set_title(f"Test Name: {test_name}, Limit: {limit}")
             axs[i, 0].set_ylabel("Mean CPU Usage")
