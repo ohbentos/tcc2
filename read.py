@@ -1,9 +1,10 @@
 import json
 import os
+from collections.abc import Hashable
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from pandas.core.frame import Literal
 
 ROOT_DIR = "results"
 
@@ -63,25 +64,31 @@ def read_json_data(root_dir: str) -> pd.DataFrame:
                                         "Server CPU Max": server_cpu["max"],
                                         "Server CPU Min": server_cpu["min"],
                                         "Server CPU Std": server_cpu["std_deviation"],
-                                        "Server Memory Mean": server_mem["mean"]/1_000_000,
-                                        "Server Memory Median": server_mem["median"]/1_000_000,
-                                        "Server Memory Max": server_mem["max"]/1_000_000,
-                                        "Server Memory Min": server_mem["min"]/1_000_000,
-                                        "Server Memory Std": server_mem[
-                                            "std_deviation"
-                                        ]/1_000_000,
+                                        "Server Memory Mean": server_mem["mean"]
+                                        / 1_000_000,
+                                        "Server Memory Median": server_mem["median"]
+                                        / 1_000_000,
+                                        "Server Memory Max": server_mem["max"]
+                                        / 1_000_000,
+                                        "Server Memory Min": server_mem["min"]
+                                        / 1_000_000,
+                                        "Server Memory Std": server_mem["std_deviation"]
+                                        / 1_000_000,
                                         "Client CPU Mean": client_cpu["mean"],
                                         "Client CPU Median": client_cpu["median"],
                                         "Client CPU Max": client_cpu["max"],
                                         "Client CPU Min": client_cpu["min"],
                                         "Client CPU Std": client_cpu["std_deviation"],
-                                        "Client Memory Mean": client_mem["mean"]/1_000_000,
-                                        "Client Memory Median": client_mem["median"]/1_000_000,
-                                        "Client Memory Max": client_mem["max"]/1_000_000,
-                                        "Client Memory Min": client_mem["min"]/1_000_000,
-                                        "Client Memory Std": client_mem[
-                                            "std_deviation"
-                                        ]/1_000_000,
+                                        "Client Memory Mean": client_mem["mean"]
+                                        / 1_000_000,
+                                        "Client Memory Median": client_mem["median"]
+                                        / 1_000_000,
+                                        "Client Memory Max": client_mem["max"]
+                                        / 1_000_000,
+                                        "Client Memory Min": client_mem["min"]
+                                        / 1_000_000,
+                                        "Client Memory Std": client_mem["std_deviation"]
+                                        / 1_000_000,
                                     }
                                 )
 
@@ -129,6 +136,9 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
             for (database), database_group in group[group["Limit"] == limit].groupby(
                 "Database"
             ):
+                if not isinstance(database, Hashable):
+                    continue
+                database = str(database)
                 axs[i, 0].plot(
                     database_group["CPUs"],
                     database_group[f"{t} CPU Mean"],
