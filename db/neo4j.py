@@ -4,6 +4,49 @@
 BLA = ",".join([f"p{n}: prop.p{n}" for n in range(1, 318)])
 
 
+def graph_view():
+    query = """
+MATCH (p:Props) RETURN p
+"""
+
+
+def vertice_view():
+    query = """
+MATCH (v:Vertice)
+RETURN v.graph_id,COLLECT(v)
+"""
+
+
+def edge_view():
+    query = """
+MATCH (:Vertice)-[e:EDGE]-(:Vertice)
+RETURN e.graph_id, COLLECT(e)
+"""
+
+
+def all_view():
+    query = """
+MATCH (p:Props)
+MATCH (v:Vertice)-[e:EDGE]-(:Vertice)
+WHERE p.graph_id = v.graph_id
+RETURN p, COLLECT(e),COLLECT(v)
+"""
+
+
+def get_vertice_view():
+    query = """
+MATCH (v:Vertice)
+RETURN v
+"""
+
+
+def get_edge_view():
+    query = """
+MATCH (:Vertice)-[e:EDGE]-(:Vertice)
+RETURN e
+"""
+
+
 def create_bulk(tx, props, edges, vertices):
     query = (
         "UNWIND $props as prop "
