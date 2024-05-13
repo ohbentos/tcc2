@@ -1,23 +1,27 @@
 import json
 import time
 import uuid
-# grau medio e diametro
-# 
 
 import numpy as np
 from neo4j import GraphDatabase
 from tqdm import tqdm
 
-from db.neo4j import (create_edge_separated_bulk, create_props_separated, create_bulk,
-                      create_vertice_separated_bulk)
+from db.neo4j import (create_edge_separated_bulk, create_props,
+                      create_props_link, create_vertice_separated_bulk)
 from db.postgres import PGDatabase
 from helpers.files import count_file_lines
+
+# grau medio e diametro
+# 
+
+
 
 AUTH_NEO4J = ("neo4j", "password")
 
 
 def main():
-    insert_data_neo4j_separated(3011, reset=False)
+    # insert_data_neo4j_separated(3011, reset=False)
+    insert_data_neo4j_separated(3021, reset=False)
     # insert_data(PGDatabase(8001))
     # insert_data_json(
     #     PGDatabase(8002),
@@ -30,7 +34,7 @@ def main():
     pass
 
 def create_random_dict(size: int) -> dict[str, float]:
-    numbers = np.random.uniform(low=0.0, high=10, size=10).astype(np.float32).astype(str)
+    numbers = np.random.uniform(low=0.0, high=10, size=size).astype(np.float32)
     return  {f"p{i+1}": x for i,x in  enumerate(numbers) }
 
 
@@ -38,11 +42,15 @@ def insert_data_neo4j_separated(db: int, reset=False):
     grafos_file = open("./data/grafos_10_a_20.txt", "r")
     props_file = open("./data/metricas.limpo.txt", "r")
 
-    vertices_b = []
-    edges_b= []
-    props_b = []
     with GraphDatabase.driver(f"neo4j://localhost:{db}", auth=AUTH_NEO4J) as driver:
         with driver.session() as session:
+            session.run("CREATE INDEX vertice_id_idx FOR (v:Vertice) ON (v.id)")
+            session.run("CREATE INDEX vertice_graph_id_idx FOR (v:Vertice) ON (v.graph_id)")
+            session.run("CREATE INDEX props_graph_id_idx FOR (p:Props) ON (p.graph_id)")
+            session.run("CREATE INDEX props_id_idx FOR (p:Props) ON (p.id)")
+            session.run("CREATE INDEX edge_graph_id_idx FOR ()-[r:EDGE]-() ON (r.graph_id)")
+            session.run("CREATE INDEX edge_id_idx FOR ()-[r:EDGE]-() ON (r.id)")
+            session.run("CREATE INDEX has_graph_props_graph_id_idx FOR ()-[r:HAS_GRAPH_PROPS]-() ON (r.graph_id)")
             i = 0
             for graph_line in tqdm(
                 grafos_file, total=count_file_lines(open("./data/grafos_10_a_20.txt", "rb"))
@@ -69,7 +77,7 @@ def insert_data_neo4j_separated(db: int, reset=False):
                     props_list = props_line.strip("\n").split("\t")
                     props_id = float(props_list[0])
 
-                props = filter_props_np(props_list[1:])
+                props = props_list[1:]
 
                 graph_n_vertices = int(graph_list[1])
 
@@ -78,7 +86,7 @@ def insert_data_neo4j_separated(db: int, reset=False):
                     for i in range(3, len(graph_list), 2)
                 ]
 
-                metricas = {f"p{i+1}": float(x) for i,x in enumerate(props)}
+                metricas: dict[str,float] = {f"p{i+1}": float(x) for i,x in enumerate(props)}
 
                 ids_vertices = [uuid.uuid4().__str__() for _ in range(graph_n_vertices)]
 
@@ -100,19 +108,84 @@ def insert_data_neo4j_separated(db: int, reset=False):
                         } for i in range(graph_n_vertices)
                 ]
 
-                edges_b.append(edges)
-                vertices_b.append(vertices)
-                metricas["graph_id"] = graph_id
-                props_b.append(metricas)
+                session.execute_write(create_props, graph_id, metricas)
+                session.execute_write(create_vertice_separated_bulk, {"vertices":vertices})
+                session.execute_write(create_edge_separated_bulk, {"edges":edges})
 
-                if i % 1000 == 0:
-                    a = time.time()
-                    session.execute_write(create_bulk, props_b, edges_b, vertices_b)
-                    print(f"Time: {time.time() - a}")
+def insert_data_neo4j_unified(db: int, reset=False):
+    grafos_file = open("./data/grafos_10_a_20.txt", "r")
+    props_file = open("./data/metricas.limpo.txt", "r")
 
-                # session.execute_write(create_props_separated, graph_id, metricas)
-                # session.execute_write(create_vertice_separated_bulk, {"vertices":vertices})
-                # session.execute_write(create_edge_separated_bulk, {"edges":edges})
+    with GraphDatabase.driver(f"neo4j://localhost:{db}", auth=AUTH_NEO4J) as driver:
+        with driver.session() as session:
+            session.run("CREATE INDEX vertice_id_idx FOR (v:Vertice) ON (v.id)")
+            session.run("CREATE INDEX vertice_graph_id_idx FOR (v:Vertice) ON (v.graph_id)")
+            session.run("CREATE INDEX props_graph_id_idx FOR (p:Props) ON (p.graph_id)")
+            session.run("CREATE INDEX props_id_idx FOR (p:Props) ON (p.id)")
+            session.run("CREATE INDEX edge_graph_id_idx FOR ()-[r:EDGE]-() ON (r.graph_id)")
+            session.run("CREATE INDEX edge_id_idx FOR ()-[r:EDGE]-() ON (r.id)")
+            session.run("CREATE INDEX has_graph_props_graph_id_idx FOR ()-[r:HAS_GRAPH_PROPS]-() ON (r.graph_id)")
+            i = 0
+            for graph_line in tqdm(
+                grafos_file, total=count_file_lines(open("./data/grafos_10_a_20.txt", "rb"))
+            ):
+                i += 1
+                props_line = props_file.readline()
+                # while i < 1856529:
+                #     props_line = props_file.readline()
+                #     i += 1
+                #     continue
+
+                props_list = props_line.strip("\n").split("\t")
+                props_id = float(props_list[0])
+
+                graph_list = graph_line.strip("\n").split(" ")
+                graph_id = graph_list[0]
+
+                if int(props_id) > int(graph_id):
+                    graph_line = grafos_file.readline()
+                    graph_list = graph_line.strip("\n").split(" ")
+                    graph_id = graph_list[0]
+                elif int(props_id) < int(graph_id):
+                    props_line = props_file.readline()
+                    props_list = props_line.strip("\n").split("\t")
+                    props_id = float(props_list[0])
+
+                props = props_list[1:]
+
+                graph_n_vertices = int(graph_list[1])
+
+                edge_list = [
+                    (int(graph_list[i]), int(graph_list[i + 1]))
+                    for i in range(3, len(graph_list), 2)
+                ]
+
+                metricas: dict[str,float|str] = {f"p{i+1}": float(x) for i,x in enumerate(props)}
+
+                ids_vertices = [uuid.uuid4().__str__() for _ in range(graph_n_vertices)]
+
+                graph_id = uuid.uuid4().__str__()
+
+                edges = [ 
+                    {
+                        "graph_id": graph_id,
+                        "id1": ids_vertices[int(e1)],
+                        "id2": ids_vertices[int(e2)],
+                        "properties": create_random_dict(10),
+                    } for e1, e2 in edge_list
+                ]
+                vertices = [
+                        {
+                            "id": ids_vertices[i],
+                            "graph_id": graph_id,
+                            "properties": create_random_dict(10),
+                        } for i in range(graph_n_vertices)
+                ]
+
+                session.execute_write(create_props, graph_id, metricas)
+                session.execute_write(create_vertice_separated_bulk, {"vertices":vertices})
+                session.execute_write(create_props_link, ids_vertices, graph_id)
+                session.execute_write(create_edge_separated_bulk, {"edges":edges})
 
 
 

@@ -159,12 +159,15 @@ def test_db(
 
 
 if __name__ == "__main__":
+    with open("/sys/fs/cgroup/client/cpuset.cpus","w") as f:
+        f.write("8-9")
     dbs_test = [
         "graph_vertice",
         "graph_edge",
         "graph_unified",
         "graph_jsonb",
         "graph_three",
+        "graph_three_idx",
     ]
 
     MAX_RUNS = 3

@@ -12,6 +12,19 @@ services:
     ports:
       - "8000:5432"
 
+  graph_three_idx:
+    shm_size: '5gb'
+    image: postgres:latest
+    container_name: graph_three_idx
+    volumes:
+      - graph_three_idx:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "8005:5432"
+
 
   graph_unified:
     shm_size: '5gb'
@@ -79,6 +92,17 @@ services:
       - "3011:7687"
       - "3010:7474"
 
+  neo4j_unified:
+    image: neo4j
+    container_name: neo4j_unified
+    volumes:
+      - neo4j_unified:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    ports:
+      - "3021:7687"
+      - "3020:7474"
+
 
   # test:
     # image: postgres:latest
@@ -100,6 +124,8 @@ name: graph_pg_cluster
 volumes:
   graph_three:
     name: graph_three
+  graph_three_idx:
+    name: graph_three_idx
   graph_unified:
     name: graph_unified
   graph_jsonb:
@@ -110,3 +136,5 @@ volumes:
     name: graph_edge
   neo4j_separated:
     name: neo4j_separated
+  neo4j_unified:
+    name: neo4j_unified
