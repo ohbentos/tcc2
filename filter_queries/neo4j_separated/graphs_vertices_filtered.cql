@@ -1,5 +1,5 @@
-MATCH (ve:Vertice)-[has_props:HAS_GRAPH_PROPS]->(g:Props) WHERE {{graph_filter}}
-MATCH (ve)-[ed:EDGE]-(:Vertice)
+MATCH (g:Props) WHERE {{graph_filter}}
+MATCH (ve:Vertice) WHERE ve.graph_id = g.graph_id
 WITH ve.graph_id AS graph_id, COLLECT(ve) AS vertices
 WHERE
   ANY(v IN vertices WHERE {{vertice_filter}} )
