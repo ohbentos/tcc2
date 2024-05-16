@@ -81,22 +81,6 @@ services:
     ports:
       - "8004:5432"
 
-  neo4j_separated:
-    image: neo4j
-    container_name: neo4j_separated
-    volumes:
-      - neo4j_separated:/data
-    environment:
-      - NEO4J_AUTH=neo4j/password
-      - NEO4J_server_memory_heap_initial__size=5g
-      - NEO4J_server_memory_heap_max__size=5g
-      - NEO4J_server_memory_pagecache_size=7g
-      - NEO4J_PLUGINS=["apoc"]
-      - NEO4J_server_jvm_additional='-XX:+ExitOnOutOfMemoryError'
-    ports:
-      - "3010:7687"
-      - "3011:7474"
-
   neo4j:
     image: neo4j
     container_name: neo4j
@@ -112,6 +96,22 @@ services:
     ports:
       - "3000:7687"
       - "3001:7474"
+
+  neo4j_separated:
+    image: neo4j
+    container_name: neo4j_separated
+    volumes:
+      - neo4j_separated:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_server_memory_heap_initial__size=5g
+      - NEO4J_server_memory_heap_max__size=5g
+      - NEO4J_server_memory_pagecache_size=7g
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_server_jvm_additional='-XX:+ExitOnOutOfMemoryError'
+    ports:
+      - "3010:7687"
+      - "3011:7474"
 
   neo4j_unified:
     image: neo4j
