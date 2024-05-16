@@ -320,10 +320,11 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
         plt.close()
 
 
-df = read_json_data(ROOT_DIR)
-agg_df = aggregate_data(df)
-plot(agg_df, "Server")
-plot(agg_df, "Client")
+if  __name__ == "__main__":
+    df = read_json_data(ROOT_DIR)
+    agg_df = aggregate_data(df)
+    plot(agg_df, "Server")
+    plot(agg_df, "Client")
 
 # agg_df.to_csv('agg_benchmark_results.csv', index=False)
 # agg_df.to_excel('agg_benchmark_results.xlsx', index=False)

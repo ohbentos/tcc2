@@ -1,4 +1,15 @@
+import sys
+
 import docker
+
+
+def get_container_port(container_name: str):
+    if container_name.startswith("graph"):
+        return "5432/tcp"
+    elif container_name.startswith("neo4j"):
+        return "7687/tcp"
+    else:
+        raise ValueError("Invalid container name")
 
 
 def get_container_info(container_name: str):
@@ -20,9 +31,8 @@ def get_container_info(container_name: str):
             cont[name] = {}
             cont[name]["id"] = x.id
             try:
-                host_port = list(x.attrs["HostConfig"]["PortBindings"].values())[0][0][
-                    "HostPort"
-                ]
+                key = get_container_port(container_name)
+                host_port = x.attrs["NetworkSettings"]["Ports"][key][0]["HostPort"]
             except IndexError:
                 continue
             cont[name]["port"] = int(host_port)
@@ -30,3 +40,7 @@ def get_container_info(container_name: str):
 
     db_info = cont[container_name]
     return db_info
+
+
+if __name__ == "__main__":
+    get_container_info(sys.argv[1])

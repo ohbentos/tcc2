@@ -241,7 +241,6 @@ graphs_all_filtered_f4 = partial(
 
 def get_tests(db_name: str):
     global postgres_tests, neo4j_tests
-    
 
     filtered_tests = {
         "graphs_vertices_filtered_f1": [
@@ -421,7 +420,16 @@ def get_tests(db_name: str):
         for key, value in neo4j_tests.items():
             filtered_tests[key] = value
     else:
-        print("Unknown database "+ db_name)
+        print("Unknown database " + db_name)
         exit(0)
+
+    if db_name == "neo4j_unified":
+        filtered_tests["all_view"] = [
+            neo4j.all_view_unified(10),
+            neo4j.all_view_unified(100),
+            neo4j.all_view_unified(1_000),
+            neo4j.all_view_unified(10_000),
+            neo4j.all_view_unified(100_000),
+        ]
 
     return filtered_tests

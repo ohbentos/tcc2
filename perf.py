@@ -8,7 +8,9 @@ from multiprocessing.synchronize import Event
 
 from cgroups import count_io_cgroups, set_cpus, set_pid_to_cgroup
 from container import get_container_info
+from db.neo4j import Neo4jDatabase
 from db.postgres import PGDatabase
+from db.types import Database
 from monitor import SLEEP_TIME, monitor_cgroup
 from plot import save_plot
 from statistic import calculate_statistics
@@ -16,21 +18,22 @@ from tests import get_tests
 
 
 def run_query(
-    db: PGDatabase, query: str, done_event: Event, queue: Queue, lets_go: Event
+    db: Database,
+    query: str,
+    done_event: Event,
+    queue: Queue,
+    lets_go: Event,
 ):
     set_pid_to_cgroup(os.getpid(), "client")
     io_before = count_io_cgroups("client")
-    time.sleep(0.150)
+    time.sleep(0.200)
 
     lets_go.set()
 
     records = 0
     error = False
     try:
-        db.execute(query)
-        records = len(db.cur.fetchall())
-        db.cur.close()
-        db.conn.close()
+        records = db.query(query)
     except Exception as e:
         print(f"Error executing query: {e}")
         error = True
@@ -62,20 +65,24 @@ def test_db(
 ):
     if query_id == None:
         query_id = "None"
-    file_name = (
-        f"./results/{db_name}/{cpu_count}/{run}_{test_name}-{query_id}.json"
-    )
+    file_name = f"./results/{db_name}/{cpu_count}/{run}_{test_name}-{query_id}.json"
 
     if os.path.exists(file_name):
         print(f"Skipping {file_name}")
         return
 
     print(
-        f"{run} testing db {db_name} on test {test_name} with {cpus} cpus on query {qid}-{q}"
+        f"run={run} db={db_name} test={test_name} cpus={cpu_count} limit={query_id} \nquery:\n{query}\n"
     )
 
     db_info = get_container_info(db_name)
-    db = PGDatabase(db_info["port"])
+    if db_name.startswith("graph"):
+        db = PGDatabase(db_info["port"])
+    elif db_name.startswith("neo4j"):
+        db = Neo4jDatabase(db_info["port"])
+    else:
+        print("Invalid db name")
+        exit(0)
     # pid = db_info["pid"]
 
     db.start()
@@ -159,9 +166,11 @@ def test_db(
 
 
 if __name__ == "__main__":
-    with open("/sys/fs/cgroup/client/cpuset.cpus","w") as f:
+    with open("/sys/fs/cgroup/client/cpuset.cpus", "w") as f:
         f.write("8-9")
     dbs_test = [
+        "neo4j_unified",
+        "neo4j_separated",
         "graph_vertice",
         "graph_edge",
         "graph_unified",
@@ -178,11 +187,11 @@ if __name__ == "__main__":
             )
         )
         subprocess.run(
-            f"docker compose -f /home/bento/tcc/docker/docker-compose.yaml up -d {db_name}".split(
+            f"docker compose -f /home/bento/tcc/docker/docker-compose.yaml up -d --build {db_name}".split(
                 " "
             )
         )
-        time.sleep(3)
+        time.sleep(15)
         tests = get_tests(db_name)
         for cpus in range(1, 9):
             set_cpus(cpus)
@@ -193,8 +202,5 @@ if __name__ == "__main__":
                     for query in tests[test_name]:
                         q = list(query.keys())[0]
                         qid = list(query.values())[0]
-                        # print(
-                        #     f"{run} testing db {db_name} on test {test_name} with {cpus} cpus on query {qid}-{q}"
-                        # )
                         test_db(db_name, q, qid, test_name, cpus, run)
                         print("\n")

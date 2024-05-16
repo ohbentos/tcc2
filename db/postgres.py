@@ -5,6 +5,14 @@ import psycopg2.extras
 
 
 class PGDatabase:
+    def query(self, q: str) -> int:
+        self.execute(q)
+        records = len(self.cur.fetchall())
+        self.cur.close()
+        self.conn.close()
+
+        return records
+
     def __init__(self, port: int):
         self.port = port
         self.ref = "postgres://127.0.0.1:" + str(self.port)
