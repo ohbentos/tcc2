@@ -1,6 +1,6 @@
-MATCH (ve:Vertice)-[has_props:HAS_GRAPH_PROPS]->(g:Props) WHERE {{graph_filter}}
-MATCH (ve)-[ed:EDGE]-(:Vertice)
-WITH ve.graph_id AS graph_id, COLLECT(ve) AS vertices, COLLECT(ed) AS edges
+MATCH (g:Props)-[:HAS_GRAPH_PROPS]-(v1:Vertice)-[e1:EDGE]-(:Vertice)
+WHERE {{graph_filter}}
+WITH g.graph_id as graph_id, COLLECT(v1) AS vertices, COLLECT(e1) AS edges
 WHERE
   ANY(v IN vertices WHERE {{vertice_filter}} )
   AND

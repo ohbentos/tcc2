@@ -1,6 +1,9 @@
-MATCH (g:Props) WHERE {{graph_filter}}
-MATCH (ve:Vertice) WHERE ve.graph_id = g.graph_id
-WITH ve.graph_id AS graph_id, COLLECT(ve) AS vertices
+MATCH (g:Props)
+  WHERE {{graph_filter}}
+WITH g
+MATCH (v:Vertice)-[:EDGE]-(:Vertice)
+  WHERE g.graph_id = v.graph_id
+WITH g.graph_id as graph_id,COLLECT(v) AS vertices
 WHERE
   ANY(v IN vertices WHERE {{vertice_filter}} )
 RETURN graph_id LIMIT {{limit}}
