@@ -1,7 +1,7 @@
 MATCH (g:Props)
   WHERE {{graph_filter}}
 WITH g
-MATCH (v:Vertice)-[:EDGE]-(:Vertice)
+MATCH (v:Vertice)
   WHERE g.graph_id = v.graph_id
 WITH g.graph_id as graph_id,COLLECT(v) AS vertices
 WHERE
