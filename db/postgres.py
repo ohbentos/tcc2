@@ -5,7 +5,7 @@ import psycopg2.extras
 
 
 class PGDatabase:
-    def query(self, q: str) -> int:
+    def query(self, q: str, limit: str | None) -> int:
         self.execute(q)
         records = len(self.cur.fetchall())
         self.cur.close()

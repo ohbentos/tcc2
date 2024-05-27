@@ -1,4 +1,7 @@
 # MATCH (n) DETACH DELETE n
+from neo4j import GraphDatabase, ManagedTransaction, Result
+
+from db import neo4j
 
 # MATCH (v:Vertice) RETURN valueType(v.p1)
 
@@ -10,18 +13,16 @@
 # CREATE INDEX edge_id_idx FOR ()-[r:EDGE]-() ON (r.id);
 # CREATE INDEX has_graph_props_graph_id_idx FOR ()-[r:HAS_GRAPH_PROPS]-() ON (r.graph_id);
 
-import uuid
 
-from neo4j import GraphDatabase
-
-from db import neo4j
+def do_query(tx: ManagedTransaction, query: str) -> Result:
+    return tx.run(query)  # type: ignore
 
 
 class Neo4jDatabase:
     def __init__(self, port: int):
         self.port = port
         self.ref = "bolt://127.0.0.1:" + str(self.port)
-        print(self.ref)
+        # print(self.ref)
 
     def start(self):
         self.driver = GraphDatabase.driver(
@@ -33,7 +34,7 @@ class Neo4jDatabase:
         )
         self.session = self.driver.session()
 
-    def query(self, q: str) -> int:
+    def query(self, q: str, limit: str | None) -> int:
         results = self.session.run(q)  # type: ignore
         i = 0
         for _ in results:
@@ -184,4 +185,34 @@ def create_props(tx, graph_id, id, properties):
         id=id,
         graph_id=graph_id,
         **properties,
+    )
+
+
+def run_neo4j_indexes(session):
+    session.run(
+        "CREATE CONSTRAINT unique_props_graph_id IF NOT EXISTS FOR (u:Props) REQUIRE u.graph_id IS UNIQUE"
+    )
+    session.run(
+        "CREATE CONSTRAINT unique_props_id IF NOT EXISTS FOR (p:Props) REQUIRE p.id IS UNIQUE"
+    )
+
+    session.run(
+        "CREATE CONSTRAINT unique_vertice_id IF NOT EXISTS FOR (v:Vertice) REQUIRE v.id IS UNIQUE"
+    )
+    session.run(
+        "CREATE INDEX vertice_graph_id_idx IF NOT EXISTS FOR (v:Vertice) ON v.graph_id"
+    )
+
+    session.run(
+        "CREATE CONSTRAINT unique_edge_id IF NOT EXISTS FOR ()-[e:EDGE]-() REQUIRE e.id IS UNIQUE"
+    )
+    session.run(
+        "CREATE INDEX edge_graph_id_idx IF NOT EXISTS FOR ()-[e:EDGE]-() ON e.graph_id"
+    )
+
+    session.run(
+        "CREATE CONSTRAINT unique_has_graph_props IF NOT EXISTS FOR ()-[r:HAS_GRAPH_PROPS]-() REQUIRE r.id IS UNIQUE"
+    )
+    session.run(
+        "CREATE INDEX has_graph_props_idx IF NOT EXISTS FOR ()-[r:HAS_GRAPH_PROPS]-() ON r.graph_id"
     )

@@ -104,9 +104,9 @@ services:
       - neo4j_separated:/data
     environment:
       - NEO4J_AUTH=neo4j/password
-      - NEO4J_server_memory_heap_initial__size=5g
-      - NEO4J_server_memory_heap_max__size=5g
-      - NEO4J_server_memory_pagecache_size=7g
+      - NEO4J_server_memory_heap_initial__size=11000m
+      - NEO4J_server_memory_heap_max__size=11000m
+      - NEO4J_server_memory_pagecache_size=1200m
       - NEO4J_PLUGINS=["apoc"]
       - NEO4J_server_jvm_additional='-XX:+ExitOnOutOfMemoryError'
     ports:
@@ -120,24 +120,29 @@ services:
       - neo4j_unified:/data
     environment:
       - NEO4J_AUTH=neo4j/password
-      - NEO4J_server_memory_heap_initial__size=5g
-      - NEO4J_server_memory_heap_max__size=5g
-      - NEO4J_server_memory_pagecache_size=7g
+      - NEO4J_server_memory_heap_initial__size=3000m
+      - NEO4J_server_memory_heap_max__size=3000m
+      - NEO4J_server_memory_pagecache_size=2000m
+      # - NEO4J_server_memory_heap_initial__size=11000m
+      # - NEO4J_server_memory_heap_max__size=11000m
+      # - NEO4J_server_memory_pagecache_size=1200m
       - NEO4J_PLUGINS=["apoc"]
       - NEO4J_server_jvm_additional='-XX:+ExitOnOutOfMemoryError'
     ports:
       - "3020:7687"
       - "3021:7474"
 
-  # test:
-    # image: postgres:latest
-    # container_name: test
-    # environment:
-    #   - POSTGRES_HOST_AUTH_METHOD=trust
-    #   - POSTGRES_PASSWORD=postgres
-    #   - PGDATA=/var/lib/postgresql/data/pgdata
-    # ports:
-    #   - "9000:5432"
+  mongodb_unified:
+    image: mongo
+    container_name: mongodb_unified
+    mem_limit: 9000m
+    volumes:
+      - mongodb_unified:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "4001:27017"
 
 networks:
   default:
@@ -165,3 +170,5 @@ volumes:
     name: neo4j_unified
   neo4j:
     name: neo4j
+  mongodb_unified:
+    name: mongodb_unified

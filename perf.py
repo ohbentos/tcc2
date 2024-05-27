@@ -3,11 +3,13 @@ import multiprocessing
 import os
 import subprocess
 import time
+from datetime import datetime
 from multiprocessing import Queue
 from multiprocessing.synchronize import Event
 
 from cgroups import count_io_cgroups, set_cpus, set_pid_to_cgroup
 from container import get_container_info
+from db.mongodb import MongoDatabase
 from db.neo4j import Neo4jDatabase
 from db.postgres import PGDatabase
 from db.types import Database
@@ -23,19 +25,23 @@ def run_query(
     done_event: Event,
     queue: Queue,
     lets_go: Event,
+    limit: str,
 ):
     set_pid_to_cgroup(os.getpid(), "client")
     io_before = count_io_cgroups("client")
-    time.sleep(0.200)
+    time.sleep(1)
 
     lets_go.set()
 
     records = 0
     error = False
+    t = time.time()
     try:
-        records = db.query(query)
+        print("Started query at ", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        records = db.query(query, limit)
     except Exception as e:
         print(f"Error executing query: {e}")
+        print("Failed after ", time.time() - t, " seconds")
         error = True
     finally:
         done_event.set()
@@ -72,14 +78,17 @@ def test_db(
         return
 
     print(
-        f"run={run} db={db_name} test={test_name} cpus={cpu_count} limit={query_id} \nquery:\n{query}\n"
+        f"run={run} cpus={cpu_count} db={db_name} test={test_name} limit={query_id} \nquery:\n{query}\n"
     )
 
     db_info = get_container_info(db_name)
+    port = db_info["port"]
     if db_name.startswith("graph"):
-        db = PGDatabase(db_info["port"])
+        db = PGDatabase(port)
     elif db_name.startswith("neo4j"):
-        db = Neo4jDatabase(db_info["port"])
+        db = Neo4jDatabase(port)
+    elif db_name.startswith("mongodb"):
+        db = MongoDatabase(port)
     else:
         print("Invalid db name")
         exit(0)
@@ -96,7 +105,7 @@ def test_db(
 
     query_process = multiprocessing.Process(
         target=run_query,
-        args=(db, query, done_event, query_result_queue, lets_go),
+        args=(db, query, done_event, query_result_queue, lets_go, query_id),
         daemon=True,
     )
     client_perf_process = multiprocessing.Process(
@@ -169,14 +178,15 @@ if __name__ == "__main__":
     with open("/sys/fs/cgroup/client/cpuset.cpus", "w") as f:
         f.write("8-9")
     dbs_test = [
-        "neo4j_unified",
-        "neo4j_separated",
-        "graph_vertice",
-        "graph_edge",
-        "graph_unified",
-        "graph_jsonb",
-        "graph_three",
-        "graph_three_idx",
+        "mongodb_unified",
+        # "neo4j_unified",
+        # "neo4j_separated",
+        # "graph_vertice",
+        # "graph_edge",
+        # "graph_unified",
+        # "graph_jsonb",
+        # "graph_three",
+        # "graph_three_idx",
     ]
 
     MAX_RUNS = 3

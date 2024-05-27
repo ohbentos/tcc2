@@ -8,6 +8,8 @@ def get_container_port(container_name: str):
         return "5432/tcp"
     elif container_name.startswith("neo4j"):
         return "7687/tcp"
+    elif container_name.startswith("mongodb"):
+        return "27017/tcp"
     else:
         raise ValueError("Invalid container name")
 

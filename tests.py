@@ -1,63 +1,127 @@
 # format: "query" : "name"
 from functools import partial
 
+import db.mongodb as mongodb
 import db.neo4j as neo4j
 import filters
 
-neo4j_tests = {
-    "graph_view": [
-        neo4j.graph_view(10),
-        neo4j.graph_view(100),
-        neo4j.graph_view(1_000),
-        neo4j.graph_view(10_000),
-        neo4j.graph_view(100_000),
-    ],
-    "vertice_view": [
-        neo4j.vertice_view(10),
-        neo4j.vertice_view(100),
-        neo4j.vertice_view(1_000),
-        neo4j.vertice_view(10_000),
-        neo4j.vertice_view(100_000),
-    ],
-    "edge_view": [
-        neo4j.edge_view(10),
-        neo4j.edge_view(100),
-        neo4j.edge_view(1_000),
-        neo4j.edge_view(10_000),
-        neo4j.edge_view(100_000),
-    ],
-    "all_view": [
-        neo4j.all_view_separated(10),
-        neo4j.all_view_separated(100),
-        neo4j.all_view_separated(1_000),
-        neo4j.all_view_separated(10_000),
-        neo4j.all_view_separated(100_000),
-    ],
-    "get_vertice_view": [
-        neo4j.get_vertice_view(10),
-        neo4j.get_vertice_view(100),
-        neo4j.get_vertice_view(1_000),
-        neo4j.get_vertice_view(10_000),
-        neo4j.get_vertice_view(100_000),
-    ],
-    "get_edge_view": [
-        neo4j.get_edge_view(10),
-        neo4j.get_edge_view(100),
-        neo4j.get_edge_view(1_000),
-        neo4j.get_edge_view(10_000),
-        neo4j.get_edge_view(100_000),
-    ],
-    "list_diameters": [
-        {
-            """
+
+def mongodb_tests():
+    return {
+        "graph_view": [
+            mongodb.graph_view(10),
+            mongodb.graph_view(100),
+            mongodb.graph_view(1_000),
+            mongodb.graph_view(10_000),
+            mongodb.graph_view(100_000),
+        ],
+        "vertice_view": [
+            mongodb.vertice_view(10),
+            mongodb.vertice_view(100),
+            mongodb.vertice_view(1_000),
+            mongodb.vertice_view(10_000),
+            mongodb.vertice_view(100_000),
+        ],
+        "edge_view": [
+            mongodb.edge_view(10),
+            mongodb.edge_view(100),
+            mongodb.edge_view(1_000),
+            mongodb.edge_view(10_000),
+            mongodb.edge_view(100_000),
+        ],
+        "all_view": [
+            mongodb.all_view(10),
+            mongodb.all_view(100),
+            mongodb.all_view(1_000),
+            mongodb.all_view(10_000),
+            mongodb.all_view(100_000),
+        ],
+        "get_vertice_view": [
+            mongodb.get_vertice_view(10),
+            mongodb.get_vertice_view(100),
+            mongodb.get_vertice_view(1_000),
+            mongodb.get_vertice_view(10_000),
+            mongodb.get_vertice_view(100_000),
+        ],
+        "get_edge_view": [
+            mongodb.get_edge_view(10),
+            mongodb.get_edge_view(100),
+            mongodb.get_edge_view(1_000),
+            mongodb.get_edge_view(10_000),
+            mongodb.get_edge_view(100_000),
+        ],
+        "list_diameters": [
+            mongodb.list_diameters(),
+        ],
+    }
+
+
+def neo4j_tests(db_name: str):
+    return {
+        "graph_view": [
+            neo4j.graph_view(10),
+            neo4j.graph_view(100),
+            neo4j.graph_view(1_000),
+            neo4j.graph_view(10_000),
+            neo4j.graph_view(100_000),
+        ],
+        "vertice_view": [
+            neo4j.vertice_view(10),
+            neo4j.vertice_view(100),
+            neo4j.vertice_view(1_000),
+            neo4j.vertice_view(10_000),
+            neo4j.vertice_view(100_000),
+        ],
+        "edge_view": [
+            neo4j.edge_view(10),
+            neo4j.edge_view(100),
+            neo4j.edge_view(1_000),
+            neo4j.edge_view(10_000),
+            neo4j.edge_view(100_000),
+        ],
+        "all_view": (
+            [
+                neo4j.all_view_separated(10),
+                neo4j.all_view_separated(100),
+                neo4j.all_view_separated(1_000),
+                neo4j.all_view_separated(10_000),
+                neo4j.all_view_separated(100_000),
+            ]
+            if db_name == "neo4j_separated"
+            else [
+                neo4j.all_view_unified(10),
+                neo4j.all_view_unified(100),
+                neo4j.all_view_unified(1_000),
+                neo4j.all_view_unified(10_000),
+                neo4j.all_view_unified(100_000),
+            ]
+        ),
+        "get_vertice_view": [
+            neo4j.get_vertice_view(10),
+            neo4j.get_vertice_view(100),
+            neo4j.get_vertice_view(1_000),
+            neo4j.get_vertice_view(10_000),
+            neo4j.get_vertice_view(100_000),
+        ],
+        "get_edge_view": [
+            neo4j.get_edge_view(10),
+            neo4j.get_edge_view(100),
+            neo4j.get_edge_view(1_000),
+            neo4j.get_edge_view(10_000),
+            neo4j.get_edge_view(100_000),
+        ],
+        "list_diameters": [
+            {
+                """
 MATCH (p:Props)
 WHERE p.p51> 2
 WITH p.p51 AS diameter, COLLECT(p.graph_id) AS graph_ids
 RETURN diameter, graph_ids  ORDER BY diameter ASC
 """: None
-        },
-    ],
-}
+            },
+        ],
+    }
+
 
 postgres_tests = {
     "graph_view": [
@@ -417,19 +481,14 @@ def get_tests(db_name: str):
         for key, value in postgres_tests.items():
             filtered_tests[key] = value
     elif db_name.startswith("neo4j_"):
-        for key, value in neo4j_tests.items():
+        for key, value in neo4j_tests(db_name).items():
             filtered_tests[key] = value
+    elif db_name.startswith("mongo"):
+        for key, value in mongodb_tests().items():
+            filtered_tests[key] = value
+
     else:
         print("Unknown database " + db_name)
         exit(0)
-
-    if db_name == "neo4j_unified":
-        filtered_tests["all_view"] = [
-            neo4j.all_view_unified(10),
-            neo4j.all_view_unified(100),
-            neo4j.all_view_unified(1_000),
-            neo4j.all_view_unified(10_000),
-            neo4j.all_view_unified(100_000),
-        ]
 
     return filtered_tests

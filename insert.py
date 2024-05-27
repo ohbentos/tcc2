@@ -5,8 +5,9 @@ import numpy as np
 from neo4j import GraphDatabase
 from tqdm import tqdm
 
+from db.mongodb import MongoDatabase
 from db.neo4j import (AUTH_NEO4J, create_edges, create_props,
-                      create_props_link, create_vertices)
+                      create_props_link, create_vertices, run_neo4j_indexes)
 from db.postgres import PGDatabase
 from helpers.files import minimum_file_lines
 
@@ -63,38 +64,90 @@ class GrafoFile:
 
 
 def main():
-    grafos = GrafoFile("./data/grafos_10_a_20.txt", "./data/metricas.limpo.txt")
-    insert_data_neo4j_unified(3000, grafos)
-
-    # insert_data_neo4j_separated(3021, reset=False)
-    # insert_data(PGDatabase(8001))
-    # insert_data_json(
-    #     PGDatabase(8002),
-    #     reset=False,
-    # )  # reset=True)
-    # insert_data_vertice_primary(
-    #     PGDatabase(8003),
-    #     reset=False,
-    # )  # reset=True)
+    # grafos = GrafoFile("./data/grafos_10_a_20.txt", "./data/metricas.limpo.txt")
+    # insert_data_neo4j_unified(3000, grafos)
     pass
 
 def create_random_dict(size: int) -> dict[str, float]:
     numbers = np.random.uniform(low=0.0, high=10, size=size).astype(np.float32)
     return  {f"p{i+1}": x for i,x in  enumerate(numbers) }
 
-def run_neo4j_indexes(session):
-    session.run("CREATE CONSTRAINT unique_props_graph_id IF NOT EXISTS FOR (u:Props) REQUIRE u.graph_id IS UNIQUE")
-    session.run("CREATE CONSTRAINT unique_props_id IF NOT EXISTS FOR (p:Props) REQUIRE p.id IS UNIQUE")
 
-    session.run("CREATE CONSTRAINT unique_vertice_id IF NOT EXISTS FOR (v:Vertice) REQUIRE v.id IS UNIQUE")
-    session.run("CREATE INDEX vertice_graph_id_idx IF NOT EXISTS FOR (v:Vertice) ON v.graph_id")
+def insert_data_mongodb_unified(db: int, grafos: GrafoFile, reset=False):
+    client = MongoDatabase(db).start()
 
-    session.run("CREATE CONSTRAINT unique_edge_id IF NOT EXISTS FOR ()-[e:EDGE]-() REQUIRE e.id IS UNIQUE")
-    session.run("CREATE INDEX edge_graph_id_idx IF NOT EXISTS FOR ()-[e:EDGE]-() ON e.graph_id")
+    for graph_list, props_list in tqdm(grafos):
+        props = props_list[1:]
 
-    session.run("CREATE CONSTRAINT unique_has_graph_props IF NOT EXISTS FOR ()-[r:HAS_GRAPH_PROPS]-() REQUIRE r.id IS UNIQUE")
-    session.run("CREATE INDEX has_graph_props_idx IF NOT EXISTS FOR ()-[r:HAS_GRAPH_PROPS]-() ON r.graph_id")
+        graph_n_vertices = int(graph_list[1])
+        # graph_comp_onda = graph_list[2]
 
+        graph_edges = graph_list[3:]
+        graph_edges = [
+            (int(graph_list[i]), int(graph_list[i + 1]))
+            for i in range(3, len(graph_list), 2)
+        ]
+
+        graph_uuid = uuid.uuid4()
+
+        vertices_uuids = [uuid.uuid4() for _ in range(0, graph_n_vertices)]
+
+        edges_random_param = [
+            np.random.uniform(low=0.0, high=10, size=10).astype(float)
+            for _ in range(0, len(graph_edges))
+        ]
+
+        edges_value_list = [
+            {
+                "graph_id": graph_uuid.__str__(),
+                "id": uuid.uuid4().__str__(),
+                "vertice1": vertices_uuids[x[0]].__str__(),
+                "vertice2": vertices_uuids[x[1]].__str__(),
+                "p1": edges_random_param[i][0],
+                "p2": edges_random_param[i][1],
+                "p3": edges_random_param[i][2],
+                "p4": edges_random_param[i][3],
+                "p5": edges_random_param[i][4],
+                "p6": edges_random_param[i][5],
+                "p7": edges_random_param[i][6],
+                "p8": edges_random_param[i][7],
+                "p9": edges_random_param[i][8],
+                "p10": edges_random_param[i][9],
+            }
+            for i, x in enumerate(graph_edges)
+        ]
+
+        vertices_random_param = [
+            np.random.uniform(low=0.0, high=10, size=10).astype(float)
+            for _ in range(0, len(vertices_uuids))
+        ]
+
+        vertices_value_list = [
+            {
+                "graph_id": graph_uuid.__str__(),
+                "id": vertice_id.__str__(),
+                "p1": vertices_random_param[i][0],
+                "p2": vertices_random_param[i][1],
+                "p3": vertices_random_param[i][2],
+                "p4": vertices_random_param[i][3],
+                "p5": vertices_random_param[i][4],
+                "p6": vertices_random_param[i][5],
+                "p7": vertices_random_param[i][6],
+                "p8": vertices_random_param[i][7],
+                "p9": vertices_random_param[i][8],
+                "p10": vertices_random_param[i][9],
+            }
+            for i, vertice_id in enumerate(vertices_uuids)
+        ]
+
+        metricas : dict[str,float | str | list] = {f"p{i+1}": float(x) for i, x in enumerate(props)}
+        metricas["graph_id"] = graph_uuid.__str__()
+        metricas["vertices"] = vertices_value_list
+        metricas["edges"] = edges_value_list
+        metricas["vertices_count"] = len(vertices_value_list)
+        metricas["edges_count"] = len(edges_value_list)
+
+        client.insert_one(metricas)
 
 def insert_data_neo4j_separated(db: int, grafos: GrafoFile, reset=False):
     insert_data_neo4j_unified(db, grafos, reset,unified=False)
