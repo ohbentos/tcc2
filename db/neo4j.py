@@ -80,7 +80,7 @@ def edge_view(limit: int) -> dict[str, str]:
 def all_view_separated(limit: int) -> dict[str, str]:
     return {
         "MATCH (p:Props) "
-        "WITH DISTINCT p.graph_id AS graph_id,p"
+        "WITH DISTINCT p.graph_id AS graph_id,p "
         f"LIMIT {limit} "
         "MATCH (ve:Vertice)-[ed:EDGE]-(:Vertice) "
         "WHERE ve.graph_id = graph_id AND ed.graph_id = graph_id "
