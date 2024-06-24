@@ -5,4 +5,8 @@ my_plot.png
 *.csv
 *.xlsx
 plots/
-results-backup/
+plots_*/
+results-backup*/
+results_*
+undo.py
+analyze.py

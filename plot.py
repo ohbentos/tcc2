@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from collections.abc import Hashable
 from typing import Literal
 
@@ -7,6 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 ROOT_DIR = "results"
+DEFAULT_DPI = 200
 
 
 def stats_to_str(stats: dict, divide=1) -> str:
@@ -136,7 +138,7 @@ def save_plot(file_name: str, run_config: dict):
         plt_client_mem.set_title("Client Memory Usage")
 
         plt.tight_layout()
-        fig.savefig(file_name.replace(".json", ".png"))
+        fig.savefig(file_name.replace(".json", ".png"), dpi=50)
 
         # plt_client_cpu.cla()
         # plt_client_mem.cla()
@@ -246,7 +248,12 @@ def aggregate_data(df: pd.DataFrame):
     return agg_df
 
 
-def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
+def plot(
+    df: pd.DataFrame,
+    t: Literal["Server", "Client"],
+    dpi: int,
+    location: str = "",
+):
     df["CPUs"] = df["CPUs"].astype(int)
     df[f"{t} CPU Mean"] = df[f"{t} CPU Mean"].astype(float)
 
@@ -257,6 +264,15 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
         "graph_three_idx": "magenta",
         "graph_unified": "orange",
         "graph_vertice": "purple",
+        "mongodb_unified": "cyan",
+        "neo4j_separated": "yellow",
+        "neo4j_unified": "black",
+        "postgres_edge": "blue",
+        "postgres_jsonb": "green",
+        "postgres_three": "red",
+        "postgres_three_idx": "magenta",
+        "postgres_unified": "orange",
+        "postgres_vertice": "purple",
     }
 
     grouped = df.groupby("Test Name")
@@ -285,7 +301,7 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
                     marker="o",
                     linestyle="-",
                     color=database_colors[database],
-                    label=f"Database: {database}",
+                    label=f"{database}",
                 )
                 axs[i, 1].plot(
                     database_group["CPUs"],
@@ -293,7 +309,7 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
                     marker="o",
                     linestyle="-",
                     color=database_colors[database],
-                    label=f"Database: {database}",
+                    label=f"{database}",
                 )
                 axs[i, 2].plot(
                     database_group["CPUs"],
@@ -301,7 +317,7 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
                     marker="o",
                     linestyle="-",
                     color=database_colors[database],
-                    label=f"Database: {database}",
+                    label=f"{database}",
                 )
             axs[i, 0].set_xlabel("Number of CPUs")
             axs[i, 1].set_xlabel("Number of CPUs")
@@ -316,15 +332,49 @@ def plot(df: pd.DataFrame, t: Literal["Server", "Client"]):
             axs[i, 1].grid(True)
             axs[i, 2].grid(True)
         plt.tight_layout()
-        plt.savefig(f"plots/{t.lower()}_{test_name}.png")
+        if location:
+            os.makedirs(f"plots_{dpi}/{location}", exist_ok=True)
+            plt.savefig(
+                f"plots_{dpi}/{location}/{t.lower()}_{test_name}.png",
+                dpi=dpi,
+            )
+        else:
+            plt.savefig(f"plots_{dpi}/{t.lower()}_{test_name}.png", dpi=dpi)
         plt.close()
 
 
-if  __name__ == "__main__":
-    df = read_json_data(ROOT_DIR)
-    agg_df = aggregate_data(df)
-    plot(agg_df, "Server")
-    plot(agg_df, "Client")
+if __name__ == "__main__":
+    dpi = DEFAULT_DPI
+    if len(sys.argv) == 2:
+        dpi = int(sys.argv[1])
+    elif len(sys.argv) > 2:
+        print("Usage: python plot.py [dpi]")
+        sys.exit(1)
 
-# agg_df.to_csv('agg_benchmark_results.csv', index=False)
-# agg_df.to_excel('agg_benchmark_results.xlsx', index=False)
+    print(f"DPI: {dpi}")
+
+    df = read_json_data(ROOT_DIR)
+    df["Database"] = df["Database"].str.replace("^graph_", "postgres_", regex=True)
+
+    df.to_csv("total_benchmark_results.csv", index=False)
+    df.to_excel("total_benchmark_results.xlsx", index=False)
+
+    agg_df = aggregate_data(df).copy()
+
+    agg_df.to_csv("agg_benchmark_results.csv", index=False)
+    agg_df.to_excel("agg_benchmark_results.xlsx", index=False)
+
+    plot(agg_df, "Server", dpi, "all")
+    plot(agg_df, "Client", dpi, "all")
+
+    # mongodb_data = agg_df[agg_df["Database"].str.startswith("mongodb")].copy()
+    # plot(mongodb_data, "Server", dpi, "mongodb")  # type:ignore
+    # plot(mongodb_data, "Client", dpi, "mongodb")  # type:ignore
+
+    # neo4j_data = agg_df[agg_df["Database"].str.startswith("neo4j")].copy()
+    # plot(neo4j_data, "Server", dpi, "neo4j")  # type:ignore
+    # plot(neo4j_data, "Client", dpi, "neo4j")  # type:ignore
+
+    # postgres_data = agg_df[agg_df["Database"].str.startswith("graph")].copy()
+    # plot(postgres_data, "Server", dpi, "postgres")  # type:ignore
+    # plot(postgres_data, "Client", dpi, "postgres")  # type:ignore

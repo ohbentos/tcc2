@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import json
 import multiprocessing
 import os
 import subprocess
+import sys
 import time
 from datetime import datetime
 from multiprocessing import Queue
@@ -17,6 +20,15 @@ from monitor import SLEEP_TIME, monitor_cgroup
 from plot import save_plot
 from statistic import calculate_statistics
 from tests import get_tests
+
+
+def filter_dict_list(nested_dict, key, value):
+    if value == "None":
+        value = None
+    if key in nested_dict:
+        filtered_list = [d for d in nested_dict[key] if value in d.values()]
+        nested_dict[key] = filtered_list
+    return nested_dict
 
 
 def run_query(
@@ -78,8 +90,10 @@ def test_db(
         return
 
     print(
-        f"run={run} cpus={cpu_count} db={db_name} test={test_name} limit={query_id} \nquery:\n{query}\n"
+        f"run={run} cpus={cpu_count} db={db_name} test={test_name} limit={query_id}\n"
     )
+    print(f"\nquery:\n{query}\n")
+    print(file_name)
 
     db_info = get_container_info(db_name)
     port = db_info["port"]
@@ -169,9 +183,9 @@ def test_db(
             print(f"Results saved to:\n{file_name}")
             print("Query execution time: ", query_execution_time)
 
-        print("saving plot")
-        save_plot(file_name, results["run_config"])
-        print("plot saved")
+        # print("saving plot")
+        # save_plot(file_name, results["run_config"])
+        # print("plot saved")
 
 
 if __name__ == "__main__":
@@ -179,17 +193,38 @@ if __name__ == "__main__":
         f.write("8-9")
     dbs_test = [
         "mongodb_unified",
-        # "neo4j_unified",
-        # "neo4j_separated",
-        # "graph_vertice",
-        # "graph_edge",
-        # "graph_unified",
-        # "graph_jsonb",
-        # "graph_three",
-        # "graph_three_idx",
+        "neo4j_unified",
+        "neo4j_separated",
+        "graph_vertice",
+        "graph_edge",
+        "graph_unified",
+        "graph_jsonb",
+        "graph_three",
+        "graph_three_idx",
     ]
 
     MAX_RUNS = 3
+    RUN_RANGE = range(1, MAX_RUNS + 1)
+
+    IS_CLI_TEST = False
+    CPU_RANGE = range(1, 9)
+    _test_name = None
+    _limit = None
+
+    if (len(sys.argv)) == 3:
+        print("Running CLI test")
+        full_name = sys.argv[1]
+        IS_CLI_TEST = True
+        _test_name = full_name.split("-")[0]
+        cpus = map(int, sys.argv[2].split(","))
+        _limit = full_name.split("-")[1].split(".")[0]
+        CPU_RANGE = list(cpus)
+        RUN_RANGE = range(1, 30 + 1)
+
+    elif (len(sys.argv)) > 1:
+        print("Usage: python3 perf.py")
+        exit(0)
+
     for db_name in dbs_test:
         subprocess.run(
             f"docker compose -f /home/bento/tcc/docker/docker-compose.yaml down".split(
@@ -201,15 +236,26 @@ if __name__ == "__main__":
                 " "
             )
         )
-        time.sleep(15)
+        if db_name.startswith("neo4j"):
+            time.sleep(30)
+        else:
+            time.sleep(0.5)
+
+        # input("Press Enter to continue...")
         tests = get_tests(db_name)
-        for cpus in range(1, 9):
+        # print(tests)
+        if IS_CLI_TEST:
+            tests = {k: v for k, v in tests.items() if k == _test_name}
+            tests = filter_dict_list(tests, _test_name, _limit)
+
+        for cpus in CPU_RANGE:
             set_cpus(cpus)
             time.sleep(0.250)
 
-            for run in range(1, MAX_RUNS + 1):
+            for run in RUN_RANGE:
                 for test_name in tests:
                     for query in tests[test_name]:
+                        # time.sleep(3)
                         q = list(query.keys())[0]
                         qid = list(query.values())[0]
                         test_db(db_name, q, qid, test_name, cpus, run)

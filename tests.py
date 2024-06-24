@@ -477,6 +477,8 @@ def get_tests(db_name: str):
         ],
     }
 
+    # filtered_tests = {}
+
     if db_name.startswith("graph_"):
         for key, value in postgres_tests.items():
             filtered_tests[key] = value
