@@ -170,6 +170,7 @@ postgres_tests = {
         {
             "SELECT p51 as diameter, array_agg(graph_id) AS graph_ids FROM graphs WHERE p51 > 2 GROUP BY p51 ORDER BY p51 ASC": None
         },
+        # "SELECT p51 as diameter, count(graph_id) AS number_of_graphs FROM graphs WHERE p51 > 2 GROUP BY p51 ORDER BY p51 ASC": None
     ],
 }
 
