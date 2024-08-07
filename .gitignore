@@ -10,3 +10,5 @@ results-backup*/
 results_*
 undo.py
 analyze.py
+cpuplots/
+boxplot.png
