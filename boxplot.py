@@ -1,6 +1,5 @@
 import json
 import os
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -53,6 +52,14 @@ whiskerprops = dict(color="black")
 capprops = dict(color="black")
 medianprops = dict(color="red")
 
+# Set global font sizes, increased by one unit
+plt.rc('font', size=15)  # Default text size (was 14)
+plt.rc('axes', titlesize=19)  # Title size (was 18)
+plt.rc('axes', labelsize=17)  # X and Y label size (was 16)
+plt.rc('xtick', labelsize=15)  # X tick label size (was 14)
+plt.rc('ytick', labelsize=15)  # Y tick label size (was 14, now set explicitly below)
+plt.rc('legend', fontsize=15)  # Legend font size (was 14)
+
 # Plot a boxplot for each model, combining all queries, with custom colors
 plt.figure(figsize=(15, 15))  # Increase the second value to make the plot taller
 sns.boxplot(
@@ -65,9 +72,19 @@ sns.boxplot(
     capprops=capprops,
     medianprops=medianprops,
 )
-plt.title("Boxplot do tempo de execução de todas as consultas por modelagem")
-plt.xlabel("Modelagem")
-plt.ylabel("Tempo de execução (s)")
-plt.xticks(rotation=45)
+
+# Set title and labels with new font sizes
+plt.title("Boxplot do tempo de execução de todas as consultas por modelagem", fontsize=19)
+plt.xlabel("Modelagem", fontsize=17)
+plt.ylabel("Tempo de execução (s)", fontsize=17)
+
+# Adjust xtick labels' rotation and font size
+plt.xticks(rotation=45, fontsize=17)
+plt.yticks(fontsize=17)  # Increase the font size of y-axis tick labels
+
+# Manually adjust the layout to reduce white space
+plt.subplots_adjust(top=0.9, bottom=0.15, left=0.10, right=0.95, hspace=0.2, wspace=0.2)
+
+# Save the plot
 plt.savefig("boxplot.png", dpi=300)
 # plt.show()
