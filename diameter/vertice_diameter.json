@@ -1,0 +1,281 @@
+[
+  {
+    "number_of_nodes": 10,
+    "diameter_distribution": [
+      {
+        "count": 909,
+        "diameter": 2
+      },
+      {
+        "count": 162665,
+        "diameter": 3
+      },
+      {
+        "count": 35940,
+        "diameter": 4
+      },
+      {
+        "count": 486,
+        "diameter": 5
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 11,
+    "diameter_distribution": [
+      {
+        "count": 43,
+        "diameter": 2
+      },
+      {
+        "count": 135669,
+        "diameter": 3
+      },
+      {
+        "count": 62420,
+        "diameter": 4
+      },
+      {
+        "count": 1868,
+        "diameter": 5
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 12,
+    "diameter_distribution": [
+      {
+        "count": 1,
+        "diameter": 2
+      },
+      {
+        "count": 103815,
+        "diameter": 3
+      },
+      {
+        "count": 91395,
+        "diameter": 4
+      },
+      {
+        "count": 4728,
+        "diameter": 5
+      },
+      {
+        "count": 61,
+        "diameter": 6
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 13,
+    "diameter_distribution": [
+      {
+        "count": 73353,
+        "diameter": 3
+      },
+      {
+        "count": 117572,
+        "diameter": 4
+      },
+      {
+        "count": 8853,
+        "diameter": 5
+      },
+      {
+        "count": 222,
+        "diameter": 6
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 14,
+    "diameter_distribution": [
+      {
+        "count": 46713,
+        "diameter": 3
+      },
+      {
+        "count": 137888,
+        "diameter": 4
+      },
+      {
+        "count": 14876,
+        "diameter": 5
+      },
+      {
+        "count": 518,
+        "diameter": 6
+      },
+      {
+        "count": 5,
+        "diameter": 7
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 15,
+    "diameter_distribution": [
+      {
+        "count": 26366,
+        "diameter": 3
+      },
+      {
+        "count": 150090,
+        "diameter": 4
+      },
+      {
+        "count": 22489,
+        "diameter": 5
+      },
+      {
+        "count": 1033,
+        "diameter": 6
+      },
+      {
+        "count": 22,
+        "diameter": 7
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 16,
+    "diameter_distribution": [
+      {
+        "count": 13388,
+        "diameter": 3
+      },
+      {
+        "count": 153562,
+        "diameter": 4
+      },
+      {
+        "count": 31313,
+        "diameter": 5
+      },
+      {
+        "count": 1677,
+        "diameter": 6
+      },
+      {
+        "count": 58,
+        "diameter": 7
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 17,
+    "diameter_distribution": [
+      {
+        "count": 6047,
+        "diameter": 3
+      },
+      {
+        "count": 149422,
+        "diameter": 4
+      },
+      {
+        "count": 41795,
+        "diameter": 5
+      },
+      {
+        "count": 2596,
+        "diameter": 6
+      },
+      {
+        "count": 134,
+        "diameter": 7
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 18,
+    "diameter_distribution": [
+      {
+        "count": 2389,
+        "diameter": 3
+      },
+      {
+        "count": 140378,
+        "diameter": 4
+      },
+      {
+        "count": 53228,
+        "diameter": 5
+      },
+      {
+        "count": 3815,
+        "diameter": 6
+      },
+      {
+        "count": 183,
+        "diameter": 7
+      },
+      {
+        "count": 2,
+        "diameter": 8
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 19,
+    "diameter_distribution": [
+      {
+        "count": 775,
+        "diameter": 3
+      },
+      {
+        "count": 128064,
+        "diameter": 4
+      },
+      {
+        "count": 65688,
+        "diameter": 5
+      },
+      {
+        "count": 5180,
+        "diameter": 6
+      },
+      {
+        "count": 271,
+        "diameter": 7
+      },
+      {
+        "count": 13,
+        "diameter": 8
+      }
+    ]
+  },
+  {
+    "number_of_nodes": 20,
+    "diameter_distribution": [
+      {
+        "count": 205,
+        "diameter": 3
+      },
+      {
+        "count": 114035,
+        "diameter": 4
+      },
+      {
+        "count": 78479,
+        "diameter": 5
+      },
+      {
+        "count": 6854,
+        "diameter": 6
+      },
+      {
+        "count": 379,
+        "diameter": 7
+      },
+      {
+        "count": 21,
+        "diameter": 8
+      },
+      {
+        "count": 3,
+        "diameter": 9
+      }
+    ]
+  }
+]
